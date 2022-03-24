@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-03-22T01:35:20.327836+00:00",
+  "timestamp": "2022-03-24T01:27:56.530075+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -6578,11 +6578,12 @@
         "glyn"
       ],
       "labels": [
-        "task"
+        "task",
+        "has PR"
       ],
       "body": "Apart from an appendix with examples, let's have in-line examples",
       "createdAt": "2021-11-10T12:14:59Z",
-      "updatedAt": "2022-03-16T17:24:05Z",
+      "updatedAt": "2022-03-22T03:30:02Z",
       "closedAt": null,
       "comments": [
         {
@@ -7647,10 +7648,12 @@
       "author": "bram209",
       "authorAssociation": "NONE",
       "assignees": [],
-      "labels": [],
-      "body": "### Dot Wildcard Selector\r\n> A dot-wild-selector acts as a wildcard by selecting the nodes of all member values of an object in its input nodelist as well as all element nodes of an array in its input nodelist.\r\n\r\nConsidering the following input:\r\n```json\r\n{\r\n  \"o\": {\"j\": 1, \"k\": 2},\r\n  \"a\": [5, 3]\r\n}\r\n```\r\n\r\n`$.*` would evaluate to (in this case the values of the object):\r\n\r\n```json\r\n[\r\n  {\"j\": 1, \"k\": 2},\r\n  [5, 3]\r\n]\r\n```\r\n\r\n### Descendant Selector\r\n\r\nI would expect the descendant version: `$..*` to evaluate to:\r\n```json\r\n[\r\n  {\"j\": 1, \"k\": 2},\r\n  [5, 3],\r\n  1,\r\n  2,\r\n  5,\r\n  3\r\n]\r\n```\r\n\r\nYet the example says:\r\n```json\r\n[\r\n  { \"o\": {\"j\": 1, \"k\": 2}, \"a\": [5, 3] }, // full input is selected, even tho the dot wildcard selector would only select the object values\r\n  {\"j\": 1, \"k\": 2},\r\n  [5, 3],\r\n  1,\r\n  2,\r\n  5,\r\n  3\r\n]\r\n```\r\nConsidering the following pseudo logic:\r\n```\r\nfunction traverse(json_value, child_selector) {\r\n     if (json_value == array) {\r\n          return child_selector.select(json_value) + json_value.map(x => traverse(x, child_selector));\r\n    } else if (json_value == object) {\r\n          return child_selector.select(json_value) + json_value.values.map(x => traverse(x, child_selector));\r\n   } else {\r\n         return [];\r\n   }\r\n}\r\n```\r\n\r\nIn the case of `$.*` the `child_selector` would be an index wildcard selector.\r\n\r\n### Expected Descendant semantics\r\nI would expect the descendant selector to (starting by selecting itself) walk through the json structure and select all the results by applying the child selector (dot-member-name, index-selector, index-wild-selector, or wildcard) on each traversed value.\r\n\r\nAm I misunderstanding something here or is this the intended behavior?\r\n",
+      "labels": [
+        "task"
+      ],
+      "body": "### Dot Wildcard Selector\r\n> A dot-wild-selector acts as a wildcard by selecting the nodes of all member values of an object in its input nodelist as well as all element nodes of an array in its input nodelist.\r\n\r\nConsidering the following input:\r\n```json\r\n{\r\n  \"o\": {\"j\": 1, \"k\": 2},\r\n  \"a\": [5, 3]\r\n}\r\n```\r\n\r\n`$.*` would evaluate to (in this case the values of the object):\r\n\r\n```json\r\n[\r\n  {\"j\": 1, \"k\": 2},\r\n  [5, 3]\r\n]\r\n```\r\n\r\n### Descendant Selector\r\n\r\nI would expect the descendant version: `$..*` to evaluate to:\r\n```json\r\n[\r\n  {\"j\": 1, \"k\": 2},\r\n  [5, 3],\r\n  1,\r\n  2,\r\n  5,\r\n  3\r\n]\r\n```\r\n\r\nYet the example says:\r\n```json\r\n[\r\n  { \"o\": {\"j\": 1, \"k\": 2}, \"a\": [5, 3] }, // full input is selected, even tho the dot wildcard selector would only select the object values\r\n  {\"j\": 1, \"k\": 2},\r\n  [5, 3],\r\n  1,\r\n  2,\r\n  5,\r\n  3\r\n]\r\n```\r\nConsidering the following pseudo logic:\r\n```\r\nfunction traverse(json_value, child_selector) {\r\n     if (json_value == array) {\r\n          return child_selector.select(json_value) + json_value.map(x => traverse(x, child_selector));\r\n    } else if (json_value == object) {\r\n          return child_selector.select(json_value) + json_value.values.map(x => traverse(x, child_selector));\r\n   } else {\r\n         return [];\r\n   }\r\n}\r\n```\r\n\r\nIn the case of `$..*` the `child_selector` would be an index wildcard selector.\r\n\r\n### Expected Descendant semantics\r\nI would expect the descendant selector to (starting by selecting itself) walk through the json structure and select all the results by applying the child selector (dot-member-name, index-selector, index-wild-selector, or wildcard) on each traversed value.\r\n\r\nAm I misunderstanding something here or is this the intended behavior?\r\n",
       "createdAt": "2022-03-21T14:11:08Z",
-      "updatedAt": "2022-03-21T15:04:08Z",
+      "updatedAt": "2022-03-22T15:26:59Z",
       "closedAt": null,
       "comments": [
         {
@@ -7659,6 +7662,13 @@
           "body": "Thanks for raising this. When I was writing the example, I noticed that only a few implementations included the node itself. But the descendant selector semantics currently say:\r\n> The descendant-selector selects the node and all its descendants.\r\n\r\nand so I included the \"starting\" node itself. This is why I included the following text in the commit message:\r\n\r\n> [Note] that contrary to the consensus of the comparison project (below), the root node appears in the results of $..* and $..[*].\r\n> \r\n>    https://cburgmer.github.io/json-path-comparison/results/dot_notation_with_wildcard_after_recursive_descent.html\r\n\r\nThe semantics section needs improving anyway to clarify the semantics of the various forms of the descendants selector. I agree with the semantics proposed above, providing there is a consensus for this in the WG.",
           "createdAt": "2022-03-21T15:04:08Z",
           "updatedAt": "2022-03-21T15:04:08Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "In my understanding descendant selector `$..*` simply extends the single-level operating of child selector `$.*` , in that it further recursively operates on all other descendant levels.\r\n\r\nSo I agree to Bram's traversal algorithm above.\r\n\r\nA node is not considered a descendant of itself. Obviously I have not been aware of this behavior.\r\n",
+          "createdAt": "2022-03-22T07:20:21Z",
+          "updatedAt": "2022-03-22T07:20:21Z"
         }
       ]
     }
@@ -28347,7 +28357,7 @@
       "id": "PR_kwDOEIqrgc40sKGu",
       "title": "Filter and list inline examples",
       "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/175",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "glyn",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -28356,18 +28366,42 @@
       "labels": [],
       "body": "Ref: https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/136",
       "createdAt": "2022-03-19T14:49:47Z",
-      "updatedAt": "2022-03-21T17:10:51Z",
+      "updatedAt": "2022-03-22T09:41:31Z",
       "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
       "baseRefName": "main",
       "baseRefOid": "2585fc8847ebb5753e95442705b3fcc32c800af6",
       "headRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
       "headRefName": "inline-examples-root",
       "headRefOid": "7eab7006f4856af9123ad79362f413f17af692a9",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "closedAt": "2022-03-22T09:41:27Z",
+      "mergedAt": "2022-03-22T09:41:27Z",
+      "mergedBy": "glyn",
+      "mergeCommit": {
+        "oid": "f8b4801a05606a2aa3fc3a202e359ab9c1920963"
+      },
+      "comments": [
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "we  need to discuss the descendant selector's behavior by including itself to the node list. ",
+          "createdAt": "2022-03-22T07:24:03Z",
+          "updatedAt": "2022-03-22T07:24:03Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> we need to discuss the descendant selector's behavior by including itself to the node list.\r\n\r\nYes. Let's do that in a PR for https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/177.",
+          "createdAt": "2022-03-22T08:14:39Z",
+          "updatedAt": "2022-03-22T08:14:39Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "yes ... it's illustratively shown, what a good thing inline examples are ...",
+          "createdAt": "2022-03-22T09:08:10Z",
+          "updatedAt": "2022-03-22T09:08:10Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOEIqrgc42iiTP",
@@ -28528,6 +28562,19 @@
               "updatedAt": "2022-03-21T15:54:32Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc42pJr9",
+          "commit": {
+            "abbreviatedOid": "7eab700"
+          },
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-03-22T07:21:52Z",
+          "updatedAt": "2022-03-22T07:21:52Z",
+          "comments": []
         }
       ]
     },
