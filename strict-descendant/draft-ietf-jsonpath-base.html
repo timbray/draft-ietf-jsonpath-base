@@ -2796,14 +2796,23 @@ descendant-selector = ".." ( dot-member-name      /  ; ..&lt;name&gt;
             <h5 id="name-semantics-8">
 <a href="#name-semantics-8" class="section-name selfRef">Semantics</a>
             </h5>
-<p id="section-3.5.7.2-1">The <code>descendant-selector</code> selects certain descendants of a node:
-* the <code>..&lt;name&gt;</code> form (and the <code>..[&lt;index&gt;]</code> form where <code>&lt;index&gt;</code> is a <code>quoted-member-name</code>) selects those descendants of the node that are member values of an object with the given member name.
-* the <code>..[&lt;index&gt;]</code> where <code>&lt;index&gt;</code> is an <code>element-index</code> selects those descendants of the node that are array elements with the given index.
-* the <code>..[*]</code> and <code>..*</code> forms select all the descendants of the node.<a href="#section-3.5.7.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.5.7.2-2">In the resultant nodelist:
-* nodes occur before their children, and
-* nodes of an array occur in array order.<a href="#section-3.5.7.2-2" class="pilcrow">¶</a></p>
-<p id="section-3.5.7.2-3">Children of an object may occur in any order, since JSON objects are unordered.<a href="#section-3.5.7.2-3" class="pilcrow">¶</a></p>
+<p id="section-3.5.7.2-1">The <code>descendant-selector</code> selects certain descendants of a node:<a href="#section-3.5.7.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.5.7.2-2.1">the <code>..&lt;name&gt;</code> form (and the <code>..[&lt;index&gt;]</code> form where <code>&lt;index&gt;</code> is a <code>quoted-member-name</code>) selects those descendants of the node that are member values of an object with the given member name.<a href="#section-3.5.7.2-2.1" class="pilcrow">¶</a>
+</li>
+              <li class="normal" id="section-3.5.7.2-2.2">the <code>..[&lt;index&gt;]</code> where <code>&lt;index&gt;</code> is an <code>element-index</code> selects those descendants of the node that are array elements with the given index.<a href="#section-3.5.7.2-2.2" class="pilcrow">¶</a>
+</li>
+              <li class="normal" id="section-3.5.7.2-2.3">the <code>..[*]</code> and <code>..*</code> forms select all the descendants of the node.<a href="#section-3.5.7.2-2.3" class="pilcrow">¶</a>
+</li>
+            </ul>
+<p id="section-3.5.7.2-3">In the resultant nodelist:<a href="#section-3.5.7.2-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.5.7.2-4.1">nodes occur before their children, and<a href="#section-3.5.7.2-4.1" class="pilcrow">¶</a>
+</li>
+              <li class="normal" id="section-3.5.7.2-4.2">nodes of an array occur in array order.<a href="#section-3.5.7.2-4.2" class="pilcrow">¶</a>
+</li>
+            </ul>
+<p id="section-3.5.7.2-5">Children of an object may occur in any order, since JSON objects are unordered.<a href="#section-3.5.7.2-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="examples-6">
@@ -2816,7 +2825,7 @@ descendant-selector = ".." ( dot-member-name      /  ; ..&lt;name&gt;
 <pre>
 {
   "o": {"j": 1, "k": 2},
-  "a": [5, 3]
+  "a": [5, 3, [{"j": 4}]]
 }
 </pre><a href="#section-3.5.7.3-2" class="pilcrow">¶</a>
 </div>
@@ -2840,34 +2849,58 @@ descendant-selector = ".." ( dot-member-name      /  ; ..&lt;name&gt;
                     <code>$..j</code>
 </td>
                   <td class="text-left" rowspan="1" colspan="1">
-                    <code>1</code>
+                    <code>1</code> <br> <code>4</code>
 </td>
                   <td class="text-center" rowspan="1" colspan="1">
-                    <code>$['o']['j']</code>
+                    <code>$['o']['j']</code> <br> <code>$['a'][2][0]['j']</code>
 </td>
                   <td class="text-left" rowspan="1" colspan="1">Object values</td>
+                </tr>
+                <tr>
+                  <td class="text-center" rowspan="1" colspan="1">
+                    <code>$..j</code>
+</td>
+                  <td class="text-left" rowspan="1" colspan="1">
+                    <code>4</code> <br> <code>1</code>
+</td>
+                  <td class="text-center" rowspan="1" colspan="1">
+                    <code>$['a'][2][0]['j']</code> <br> <code>$['o']['j']</code>
+</td>
+                  <td class="text-left" rowspan="1" colspan="1">Alternative result</td>
                 </tr>
                 <tr>
                   <td class="text-center" rowspan="1" colspan="1">
                     <code>$..[0]</code>
 </td>
                   <td class="text-left" rowspan="1" colspan="1">
-                    <code>5</code>
+                    <code>5</code> <br> <code>{"j": 4}</code>
 </td>
                   <td class="text-center" rowspan="1" colspan="1">
-                    <code>$['a'][0]</code>
+                    <code>$['a'][0]</code> <br> <code>$['a'][2][0]</code>
 </td>
                   <td class="text-left" rowspan="1" colspan="1">Array values</td>
+                </tr>
+                <tr>
+                  <td class="text-center" rowspan="1" colspan="1">
+                    <code>$..[0]</code>
+</td>
+                  <td class="text-left" rowspan="1" colspan="1">
+                    <code>{"j": 4}</code> <br> <code>5</code>
+</td>
+                  <td class="text-center" rowspan="1" colspan="1">
+                    <code>$['a'][2][0]</code> <br> <code>$['a'][0]</code>
+</td>
+                  <td class="text-left" rowspan="1" colspan="1">Alternative result</td>
                 </tr>
                 <tr>
                   <td class="text-center" rowspan="1" colspan="1">
                     <code>$..[*]</code>
 </td>
                   <td class="text-left" rowspan="1" colspan="1">
-                    <code>{"j": 1, "k" : 2}</code> <br> <code>[5, 3]</code> <br> <code>1</code> <br> <code>2</code> <br> <code>5</code> <br> <code>3</code>
+                    <code>{"j": 1, "k" : 2}</code> <br> <code>[5, 3, [{"j": 4}]]</code> <br> <code>1</code> <br> <code>2</code> <br> <code>5</code> <br> <code>3</code> <br> <code>[{"j": 4}]</code> <br> <code>{"j": 4}</code> <br> <code>4</code>
 </td>
                   <td class="text-center" rowspan="1" colspan="1">
-                    <code>$['a']</code> <br> <code>$['o']['j']</code> <br> <code>$['o']['k']</code> <br> <code>$['a'][0]</code> <br> <code>$['a'][1]</code>
+                    <code>$['o']</code> <br> <code>$['a']</code> <br> <code>$['o']['j']</code> <br> <code>$['o']['k']</code> <br> <code>$['a'][0]</code> <br> <code>$['a'][1]</code> <br> <code>$['a'][2]</code> <br> <code>$['a'][2][0]</code> <br> <code>$['a'][2][0]['j']</code>
 </td>
                   <td class="text-left" rowspan="1" colspan="1">All values</td>
                 </tr>
@@ -2876,10 +2909,10 @@ descendant-selector = ".." ( dot-member-name      /  ; ..&lt;name&gt;
                     <code>$..*</code>
 </td>
                   <td class="text-left" rowspan="1" colspan="1">
-                    <code>{"j": 1, "k" : 2}</code> <br> <code>[5, 3]</code> <br> <code>1</code> <br> <code>2</code> <br> <code>5</code> <br> <code>3</code>
+                    <code>[5, 3, [{"j": 4}]]</code> <br> <code>{"j": 1, "k" : 2}</code> <br> <code>2</code> <br> <code>1</code> <br> <code>5</code> <br> <code>3</code> <br> <code>[{"j": 4}]</code> <br> <code>{"j": 4}</code> <br> <code>4</code>
 </td>
                   <td class="text-center" rowspan="1" colspan="1">
-                    <code>$['a']</code> <br> <code>$['o']['j']</code> <br> <code>$['o']['k']</code> <br> <code>$['a'][0]</code> <br> <code>$['a'][1]</code>
+                    <code>$['a']</code> <br> <code>$['o']</code> <br> <code>$['o']['k']</code> <br> <code>$['o']['j']</code> <br> <code>$['a'][0]</code> <br> <code>$['a'][1]</code> <br> <code>$['a'][2]</code> <br> <code>$['a'][2][0]</code> <br> <code>$['a'][2][0]['j']</code>
 </td>
                   <td class="text-left" rowspan="1" colspan="1">All values</td>
                 </tr>
@@ -2891,10 +2924,16 @@ descendant-selector = ".." ( dot-member-name      /  ; ..&lt;name&gt;
                 <code>{"j": 1, "k": 2}</code> must appear before <code>1</code> and <code>2</code>,<a href="#section-3.5.7.3-6.1" class="pilcrow">¶</a>
 </li>
               <li class="normal" id="section-3.5.7.3-6.2">
-                <code>[5, 3]</code> must appear before <code>5</code> and <code>3</code>, and<a href="#section-3.5.7.3-6.2" class="pilcrow">¶</a>
+                <code>[5, 3, [{"j": 4}]]</code> must appear before <code>5</code>, <code>3</code>, and <code>[{"j": 4}]</code>,<a href="#section-3.5.7.3-6.2" class="pilcrow">¶</a>
 </li>
               <li class="normal" id="section-3.5.7.3-6.3">
-                <code>5</code> must appear before <code>3</code>.<a href="#section-3.5.7.3-6.3" class="pilcrow">¶</a>
+                <code>5</code> must appear before <code>3</code> which must appear before <code>[{"j": 4}]</code>,<a href="#section-3.5.7.3-6.3" class="pilcrow">¶</a>
+</li>
+              <li class="normal" id="section-3.5.7.3-6.4">
+                <code>[{"j": 4}]</code> must appear before <code>{"j": 4}</code>, and<a href="#section-3.5.7.3-6.4" class="pilcrow">¶</a>
+</li>
+              <li class="normal" id="section-3.5.7.3-6.5">
+                <code>{"j": 4}</code> must appear before <code>4</code>.<a href="#section-3.5.7.3-6.5" class="pilcrow">¶</a>
 </li>
             </ul>
 </section>

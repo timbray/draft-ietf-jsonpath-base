@@ -1065,16 +1065,23 @@ Syntax
 
 Semantics
 
-   The descendant-selector selects certain descendants of a node: * the
-   ..<name> form (and the ..[<index>] form where <index> is a quoted-
-   member-name) selects those descendants of the node that are member
-   values of an object with the given member name. * the ..[<index>]
-   where <index> is an element-index selects those descendants of the
-   node that are array elements with the given index. * the ..[*] and
-   ..* forms select all the descendants of the node.
+   The descendant-selector selects certain descendants of a node:
 
-   In the resultant nodelist: * nodes occur before their children, and *
-   nodes of an array occur in array order.
+   *  the ..<name> form (and the ..[<index>] form where <index> is a
+      quoted-member-name) selects those descendants of the node that are
+      member values of an object with the given member name.
+
+   *  the ..[<index>] where <index> is an element-index selects those
+      descendants of the node that are array elements with the given
+      index.
+
+   *  the ..[*] and ..* forms select all the descendants of the node.
+
+   In the resultant nodelist:
+
+   *  nodes occur before their children, and
+
+   *  nodes of an array occur in array order.
 
    Children of an object may occur in any order, since JSON objects are
    unordered.
@@ -1085,46 +1092,61 @@ Examples
 
    {
      "o": {"j": 1, "k": 2},
-     "a": [5, 3]
+     "a": [5, 3, [{"j": 4}]]
    }
 
    Queries:
 
-          +========+===================+=============+=========+
-          | Query  | Result            |    Result   | Comment |
-          |        |                   |    Paths    |         |
-          +========+===================+=============+=========+
-          |  $..j  | 1                 | $['o']['j'] | Object  |
-          |        |                   |             | values  |
-          +--------+-------------------+-------------+---------+
-          | $..[0] | 5                 |  $['a'][0]  | Array   |
-          |        |                   |             | values  |
-          +--------+-------------------+-------------+---------+
-          | $..[*] | {"j": 1, "k" : 2} |    $['a']   | All     |
-          |        | [5, 3]            | $['o']['j'] | values  |
-          |        | 1                 | $['o']['k'] |         |
-          |        | 2                 |  $['a'][0]  |         |
-          |        | 5                 |  $['a'][1]  |         |
-          |        | 3                 |             |         |
-          +--------+-------------------+-------------+---------+
-          |  $..*  | {"j": 1, "k" : 2} |    $['a']   | All     |
-          |        | [5, 3]            | $['o']['j'] | values  |
-          |        | 1                 | $['o']['k'] |         |
-          |        | 2                 |  $['a'][0]  |         |
-          |        | 5                 |  $['a'][1]  |         |
-          |        | 3                 |             |         |
-          +--------+-------------------+-------------+---------+
+     +========+====================+===================+=============+
+     | Query  | Result             |    Result Paths   | Comment     |
+     +========+====================+===================+=============+
+     |  $..j  | 1                  |    $['o']['j']    | Object      |
+     |        | 4                  | $['a'][2][0]['j'] | values      |
+     +--------+--------------------+-------------------+-------------+
+     |  $..j  | 4                  | $['a'][2][0]['j'] | Alternative |
+     |        | 1                  |    $['o']['j']    | result      |
+     +--------+--------------------+-------------------+-------------+
+     | $..[0] | 5                  |     $['a'][0]     | Array       |
+     |        | {"j": 4}           |    $['a'][2][0]   | values      |
+     +--------+--------------------+-------------------+-------------+
+     | $..[0] | {"j": 4}           |    $['a'][2][0]   | Alternative |
+     |        | 5                  |     $['a'][0]     | result      |
+     +--------+--------------------+-------------------+-------------+
+     | $..[*] | {"j": 1, "k" : 2}  |       $['o']      | All values  |
+     |        | [5, 3, [{"j": 4}]] |       $['a']      |             |
+     |        | 1                  |    $['o']['j']    |             |
+     |        | 2                  |    $['o']['k']    |             |
+     |        | 5                  |     $['a'][0]     |             |
+     |        | 3                  |     $['a'][1]     |             |
+     |        | [{"j": 4}]         |     $['a'][2]     |             |
+     |        | {"j": 4}           |    $['a'][2][0]   |             |
+     |        | 4                  | $['a'][2][0]['j'] |             |
+     +--------+--------------------+-------------------+-------------+
+     |  $..*  | [5, 3, [{"j": 4}]] |       $['a']      | All values  |
+     |        | {"j": 1, "k" : 2}  |       $['o']      |             |
+     |        | 2                  |    $['o']['k']    |             |
+     |        | 1                  |    $['o']['j']    |             |
+     |        | 5                  |     $['a'][0]     |             |
+     |        | 3                  |     $['a'][1]     |             |
+     |        | [{"j": 4}]         |     $['a'][2]     |             |
+     |        | {"j": 4}           |    $['a'][2][0]   |             |
+     |        | 4                  | $['a'][2][0]['j'] |             |
+     +--------+--------------------+-------------------+-------------+
 
-                  Table 11: Descendant selector examples
+                   Table 11: Descendant selector examples
 
    Note: The ordering of the results for the $..[*] and $..* examples
    above is not guaranteed, except that:
 
    *  {"j": 1, "k": 2} must appear before 1 and 2,
 
-   *  [5, 3] must appear before 5 and 3, and
+   *  [5, 3, [{"j": 4}]] must appear before 5, 3, and [{"j": 4}],
 
-   *  5 must appear before 3.
+   *  5 must appear before 3 which must appear before [{"j": 4}],
+
+   *  [{"j": 4}] must appear before {"j": 4}, and
+
+   *  {"j": 4} must appear before 4.
 
 3.5.8.  Filter Selector
 
