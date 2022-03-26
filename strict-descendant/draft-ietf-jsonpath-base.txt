@@ -5,10 +5,10 @@
 JSONPath WG                                              S. Gössner, Ed.
 Internet-Draft                                   Fachhochschule Dortmund
 Intended status: Standards Track                      G. Normington, Ed.
-Expires: 26 September 2022                                              
+Expires: 27 September 2022                                              
                                                          C. Bormann, Ed.
                                                   Universität Bremen TZI
-                                                           25 March 2022
+                                                           26 March 2022
 
 
                   JSONPath: Query expressions for JSON
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 September 2022.
+   This Internet-Draft will expire on 27 September 2022.
 
 Copyright Notice
 
@@ -169,8 +169,10 @@ Table of Contents
       member names).  If the node is neither an array nor an object, it
       has no descendants.
 
-   Descendants (of a node):  The children of the node, plus the
-      descendants of each of its children. [^or-self]
+   Descendants (of a node):  The children of the node, together with the
+      children of its children, and so forth recursively.  More
+      formally, the descendants relation between nodes is the transitive
+      closure of the children relation.
 
    Nodelist:  A list of nodes.  The output of applying a query to an
       argument is manifested as a list of nodes.  While this list can be
@@ -264,7 +266,7 @@ Table of Contents
         | ['name']  | child selectors for JSON objects: index     |
         |           | selector (Section 3.5.4)                    |
         +-----------+---------------------------------------------+
-        | ..        | nested descendants: descendant selector     |
+        | ..        | descendants: descendant selector            |
         |           | (Section 3.5.7)                             |
         +-----------+---------------------------------------------+
         | *         | all child member values and array elements: |
@@ -534,7 +536,7 @@ Table of Contents
    *  Array slice selector [<start>:<end>:<step>], where the optional
       values <start>, <end>, and <step> are integer literals.
 
-   *  Nested descendants selector ...
+   *  Descendants selector ...
 
    *  List selector [<sel1>,<sel2>,...,<selN>], holding a comma
       separated list of index and slice selectors.
@@ -1632,8 +1634,8 @@ A.1.  JSONPath and XPath
     +----------+------------------+-----------------------------------+
     | ..       | n/a              | parent operator                   |
     +----------+------------------+-----------------------------------+
-    | //       | ..               | nested descendants (JSONPath      |
-    |          |                  | borrows this syntax from E4X)     |
+    | //       | ..               | descendants (JSONPath borrows     |
+    |          |                  | this syntax from E4X)             |
     +----------+------------------+-----------------------------------+
     | *        | *                | wildcard: All XML elements        |
     |          |                  | regardless of their names         |
