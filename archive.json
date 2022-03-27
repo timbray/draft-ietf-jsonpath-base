@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-03-24T01:27:56.530075+00:00",
+  "timestamp": "2022-03-27T01:37:51.869863+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -7649,11 +7649,12 @@
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [
-        "task"
+        "task",
+        "has PR"
       ],
       "body": "### Dot Wildcard Selector\r\n> A dot-wild-selector acts as a wildcard by selecting the nodes of all member values of an object in its input nodelist as well as all element nodes of an array in its input nodelist.\r\n\r\nConsidering the following input:\r\n```json\r\n{\r\n  \"o\": {\"j\": 1, \"k\": 2},\r\n  \"a\": [5, 3]\r\n}\r\n```\r\n\r\n`$.*` would evaluate to (in this case the values of the object):\r\n\r\n```json\r\n[\r\n  {\"j\": 1, \"k\": 2},\r\n  [5, 3]\r\n]\r\n```\r\n\r\n### Descendant Selector\r\n\r\nI would expect the descendant version: `$..*` to evaluate to:\r\n```json\r\n[\r\n  {\"j\": 1, \"k\": 2},\r\n  [5, 3],\r\n  1,\r\n  2,\r\n  5,\r\n  3\r\n]\r\n```\r\n\r\nYet the example says:\r\n```json\r\n[\r\n  { \"o\": {\"j\": 1, \"k\": 2}, \"a\": [5, 3] }, // full input is selected, even tho the dot wildcard selector would only select the object values\r\n  {\"j\": 1, \"k\": 2},\r\n  [5, 3],\r\n  1,\r\n  2,\r\n  5,\r\n  3\r\n]\r\n```\r\nConsidering the following pseudo logic:\r\n```\r\nfunction traverse(json_value, child_selector) {\r\n     if (json_value == array) {\r\n          return child_selector.select(json_value) + json_value.map(x => traverse(x, child_selector));\r\n    } else if (json_value == object) {\r\n          return child_selector.select(json_value) + json_value.values.map(x => traverse(x, child_selector));\r\n   } else {\r\n         return [];\r\n   }\r\n}\r\n```\r\n\r\nIn the case of `$..*` the `child_selector` would be an index wildcard selector.\r\n\r\n### Expected Descendant semantics\r\nI would expect the descendant selector to (starting by selecting itself) walk through the json structure and select all the results by applying the child selector (dot-member-name, index-selector, index-wild-selector, or wildcard) on each traversed value.\r\n\r\nAm I misunderstanding something here or is this the intended behavior?\r\n",
       "createdAt": "2022-03-21T14:11:08Z",
-      "updatedAt": "2022-03-22T15:26:59Z",
+      "updatedAt": "2022-03-25T17:51:36Z",
       "closedAt": null,
       "comments": [
         {
@@ -7669,6 +7670,58 @@
           "body": "In my understanding descendant selector `$..*` simply extends the single-level operating of child selector `$.*` , in that it further recursively operates on all other descendant levels.\r\n\r\nSo I agree to Bram's traversal algorithm above.\r\n\r\nA node is not considered a descendant of itself. Obviously I have not been aware of this behavior.\r\n",
           "createdAt": "2022-03-22T07:20:21Z",
           "updatedAt": "2022-03-22T07:20:21Z"
+        }
+      ]
+    },
+    {
+      "number": 178,
+      "id": "I_kwDOEIqrgc5GTwpO",
+      "title": "Q: Should boolean literal be accepted (or rejected) in 3.5.8. Filter Selector",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/178",
+      "state": "OPEN",
+      "author": "cyrilMargaria",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "The filter selector is defined as \r\n```\r\nfilter-selector    = \"[\" S filter S \"]\"\r\nfilter             = \"?\" S boolean-expr\r\n```\r\n\r\nFilter like `[?(1==1)]` or `[?(1==2)]` are valid,  `[?(true)]` or  `[?(false)]` are logically equivalent but currently rejected. \r\n\r\nIs the intention to have true or false rejected or should the specification allow them? Having explicit text could be helpful.\r\nThis could be done for instance by using:\r\n```\r\nbasic-expr        = exist-expr /\r\n                    paren-expr /\r\n                    relation-expr / true / false\r\n```",
+      "createdAt": "2022-03-24T14:18:48Z",
+      "updatedAt": "2022-03-25T17:55:19Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "... sounds reasonable to have the constants included. I suggest as slight simplification of above:\r\n\r\n```   \r\nbasic-expr  = exist-expr /\r\n              paren-expr /\r\n              comp-expr / \r\n              regex-expr /\r\n              true /\r\n              false\r\n```\r\nmaking `relation-expr` obsolete. Any objections here? \r\n",
+          "createdAt": "2022-03-24T16:57:54Z",
+          "updatedAt": "2022-03-24T16:59:53Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "> The filter selector is defined as\r\n> \r\n> ```\r\n> filter-selector    = \"[\" S filter S \"]\"\r\n> filter             = \"?\" S boolean-expr\r\n> ```\r\n> \r\n> Filter like `[?(1==1)]` or `[?(1==2)]` are valid, `[?(true)]` or `[?(false)]` are logically equivalent but currently rejected.\r\n\r\nCorrect.\r\n\r\n> Is the intention to have true or false rejected or should the specification allow them? \r\n\r\nThe specification currently is very frugal in what is supported.\r\nWe can't even add!\r\n(See Table 5 for an overview.)\r\n\r\n> Having explicit text could be helpful. \r\n\r\nThe ABNF is quite explicit about that.\r\n\r\n> This could be done for instance by using:\r\n> \r\n> ```\r\n> basic-expr        = exist-expr /\r\n>                     paren-expr /\r\n>                     relation-expr / true / false\r\n> ```\r\n\r\nWe could, but can you explain what would be achieved by this?\r\n\r\nI'd probably add\r\n\r\n```\r\n@.price + @.tax < 20\r\n```\r\n\r\nbefore `true` and `false` in tautological positions.\r\n\r\nI'm not writing this to push back, but in an attempt to determine the proper boundaries for the expression language.\r\n\r\nGr\u00fc\u00dfe, Carsten\r\n",
+          "createdAt": "2022-03-24T17:18:10Z",
+          "updatedAt": "2022-03-24T17:18:10Z"
+        },
+        {
+          "author": "goessner",
+          "authorAssociation": "COLLABORATOR",
+          "body": "hmm ... from my point of view `true` and `false` simply are the most basic boolean expressions - `basic-expr`. So they have significance here ... regardless of meaningful benefit. I can even imagine to use them for testing filters instead of having to write `1==1` or `true == true` which is allowed btw.",
+          "createdAt": "2022-03-24T17:43:50Z",
+          "updatedAt": "2022-03-24T17:51:38Z"
+        },
+        {
+          "author": "cyrilMargaria",
+          "authorAssociation": "NONE",
+          "body": "As described by Stefan, tautological are the most basic boolean expressions. The benefit is that it makes easier to troubleshoot expressions while retaining the filter part as  applies not only to `[?(true)]` but also to [?((@.price < 50) && (true))]\r\n\r\nMfG, \r\nCyril",
+          "createdAt": "2022-03-25T11:00:24Z",
+          "updatedAt": "2022-03-25T11:00:24Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I've used this kind of thing in troubleshooting in other contexts, but `[?((@.price < 50) && (true))]` is equivalent to `[?((@.price < 50))]`. Did you mean `[?@.price < 50 || true]`? (unnecessary parentheses removed)",
+          "createdAt": "2022-03-25T17:55:19Z",
+          "updatedAt": "2022-03-25T17:55:19Z"
         }
       ]
     }
@@ -28590,7 +28643,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2022-03-19T15:20:09Z",
-      "updatedAt": "2022-03-19T15:20:57Z",
+      "updatedAt": "2022-03-25T17:28:08Z",
       "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
       "baseRefName": "main",
       "baseRefOid": "2585fc8847ebb5753e95442705b3fcc32c800af6",
@@ -28602,6 +28655,54 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 179,
+      "id": "PR_kwDOEIqrgc41CDg6",
+      "title": "Descendant selector semantics",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/179",
+      "state": "OPEN",
+      "author": "glyn",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "* Exclude the node itself\r\n* Define the term \"descendants\" more precisely\r\n* Define the descendant selector semantics more thoroughly\r\n\r\nFixes: https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/177",
+      "createdAt": "2022-03-25T17:50:06Z",
+      "updatedAt": "2022-03-26T16:40:26Z",
+      "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "baseRefName": "main",
+      "baseRefOid": "f8b4801a05606a2aa3fc3a202e359ab9c1920963",
+      "headRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "headRefName": "strict-descendant",
+      "headRefOid": "bff40da421735a23eaa017eeb6f140aeb1b05c72",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "bram209",
+          "authorAssociation": "NONE",
+          "body": "I would consider adding two additional examples:\r\n\r\ngiven:\r\n```json\r\n{\r\n  \"j\":  10,\r\n  \"o\": {\"j\": 11, \"k\": 2},\r\n  \"a\": [\r\n     { \"j\": [3, 5] },\r\n     { \"j\": [4, 6] }\r\n  ]\r\n}\r\n```\r\n`$..[0]` results in:\r\n- `{ \"j\": [3, 5] }`\r\n- `3`\r\n- `4`\r\n\r\n`$..j` and `$..['j']` results in:\r\n- `10`\r\n- `11`\r\n- `[3, 5`]\r\n- `[4, 6`]\r\n---\r\n",
+          "createdAt": "2022-03-26T11:37:54Z",
+          "updatedAt": "2022-03-26T11:37:54Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> I would consider adding two additional examples:\r\n> \r\n> given:\r\n> \r\n> ```json\r\n> {\r\n>   \"j\":  10,\r\n>   \"o\": {\"j\": 11, \"k\": 2},\r\n>   \"a\": [\r\n>      { \"j\": [3, 5] },\r\n>      { \"j\": [4, 6] }\r\n>   ]\r\n> }\r\n> ```\r\n> \r\n> `$..[0]` results in:\r\n> \r\n>     * `{ \"j\": [3, 5] }`\r\n> \r\n>     * `3`\r\n> \r\n>     * `4`\r\n> \r\n> \r\n> `$..j` and `$..['j']` results in:\r\n> \r\n>     * `10`\r\n> \r\n>     * `11`\r\n> \r\n>     * `[3, 5`]\r\n> \r\n>     * `[4, 6`]\r\n\r\nI extended the existing example attempting to exhibit the same points as the example above.",
+          "createdAt": "2022-03-26T16:20:16Z",
+          "updatedAt": "2022-03-26T16:20:16Z"
+        },
+        {
+          "author": "bram209",
+          "authorAssociation": "NONE",
+          "body": "> I extended the existing example attempting to exhibit the same points as the example above.\r\n\r\nLooks good, thanks!",
+          "createdAt": "2022-03-26T16:40:25Z",
+          "updatedAt": "2022-03-26T16:40:25Z"
+        }
+      ],
       "reviews": []
     }
   ]
