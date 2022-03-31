@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-03-27T01:37:51.869863+00:00",
+  "timestamp": "2022-03-31T01:38:03.969470+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -7635,9 +7635,24 @@
       "labels": [],
       "body": "***NOTE** I definitely think support for this proposal should **not** be part of the initial release but should be considered for follow-up releases.  I had the idea and wanted to document it.*\r\n\r\n## Scenario\r\n\r\nGiven the following JSON\r\n\r\n```json\r\n[\r\n  \"foo\",\r\n  5,\r\n  { \"bar\": null },\r\n  \"baz\",\r\n  null\r\n]\r\n```\r\n\r\nthere is no way to isolate only string values.\r\n\r\n## Proposal\r\n\r\nTo address this, we should introduce a type check.\r\n\r\nI would like to propose the `is` operator for JSON Path expressions in the filter selector `[?()]`.  Examples of usage would be:\r\n\r\n```\r\n@ is boolean\r\n@ is string\r\n@ is number\r\n@.foo is object\r\n```\r\n\r\nTo support this, we would need to reserve `object`, `array`, `boolean`, `number`, `null`, and `string` as reserved keywords in expressions, meaning that functions could not bear these names.  I don't think that this would cause any problems.\r\n\r\nIt could also support value coercion on the RHS.  For example `@ is $.foo`, could return `true` if `$.foo` is a string containing one of these type keywords.\r\n\r\n## A sub-par alternative\r\n\r\nI had also considered a `type(x)` function to build on [my proposal for functions](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/160#issuecomment-1069549608).\r\n\r\nThe `type(x)` function would take a single parameter and return... well that's the problem.  What would it return?  It can't rightly return a string.  It would have to return some implementation-internal concept of a \"value type\", and then we'd have to add support for equality.\r\n\r\n`type(@) == object` and `type(@) == \"object\"` just don't feel right.\r\n\r\nI think the `is` operator is the way to go for this feature.",
       "createdAt": "2022-03-16T20:02:27Z",
-      "updatedAt": "2022-03-16T20:02:27Z",
+      "updatedAt": "2022-03-29T19:21:30Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "A function syntax would have the advantage that it could use an extension point, while new syntax such as \" is \" always would lead to harder to manage syntax errors.\r\n",
+          "createdAt": "2022-03-29T13:28:14Z",
+          "updatedAt": "2022-03-29T13:28:14Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> A function syntax would have the advantage that it could use an extension point, while new syntax such as \" is \" always would lead to harder to manage syntax errors.\n\n\nI'm not sure why `is` would be any harder to parse than any other equivalence operator, e.g. `==` or `!=`.\n\nAnd again, what would a function return?  How would you test that a value is, for example, an array?",
+          "createdAt": "2022-03-29T19:21:30Z",
+          "updatedAt": "2022-03-29T19:21:30Z"
+        }
+      ]
     },
     {
       "number": 177,
@@ -7722,6 +7737,51 @@
           "body": "I've used this kind of thing in troubleshooting in other contexts, but `[?((@.price < 50) && (true))]` is equivalent to `[?((@.price < 50))]`. Did you mean `[?@.price < 50 || true]`? (unnecessary parentheses removed)",
           "createdAt": "2022-03-25T17:55:19Z",
           "updatedAt": "2022-03-25T17:55:19Z"
+        }
+      ]
+    },
+    {
+      "number": 180,
+      "id": "I_kwDOEIqrgc5GpWA1",
+      "title": "Filter expressions: confusing 'exists' semantics",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/180",
+      "state": "OPEN",
+      "author": "bram209",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Considering that, according to the grammar, `exist-expr` is a `boolean-exrp`:\r\n\r\n```\r\nexist-expr        = [neg-op S] singular-path \r\n```\r\n\r\nAnd the following note:\r\n> A member or element value by itself in a Boolean context is interpreted as false only if it does not exist. Otherwise it is interpreted as true. To be more specific about the actual value, explicit comparisons are necessary. This existence test -- as an exception to the general rule -- also works with structured values.\r\n\r\nSo this would mean that a singular path that points to a boolean `false` value would evaluate to `true`.\r\n\r\n```json\r\n[\r\n   { \"id\": 1, \"isActive\": true },\r\n   { \"id\": 2, \"isActive\": false },\r\n   { \"id\": 3, \"isActive\": true },\r\n]\r\n```\r\nPeople might try:\r\n`$[?(@.isActive)]` to get the active elements but will be surprised to see all elements returned.\r\n\r\nI think this kind of query is quite common and for people with a developer background it would feel unnatural to type `boolean expression == true`\r\n\r\nOn the other side,  the need for queries that check *implicitly* for existence feels rarer to me (from my experience mostly well-typed tagged unions are used to structure JSON), which makes me wonder if `exists` should be a function instead (once functions get added to the spec).\r\n\r\nThis would make the `exists` check more explicit and therefore less confusing, in my opinion.\r\n\r\n### Proposed solution\r\nPersonally, I would like to:\r\n- have an explicit way of checking existence.\r\n- evaluate singular path to a boolean value (which could be seen as a tautological statement) in the above example\r\n\r\nWhen a singular path is given as a boolean expression but does not point to a boolean value, it gets a bit tricky:\r\n- it could throw an error at the evaluation\r\n- evaluate to false always\r\n- introduce the concept of truthy & falsy values, which could serve similar use cases as `exists`, in this case, `true` would be `truthy` and `false` would be falsy and the above described problem would go away\r\n\r\nI normally am more a statically typed programming language guy so not too keen on the concept of truthy & falsy values, but considering this is a query language for JSON, it might make more sense...\r\n\r\n\r\nThoughts?",
+      "createdAt": "2022-03-29T18:16:47Z",
+      "updatedAt": "2022-03-30T11:51:29Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "bram209",
+          "authorAssociation": "NONE",
+          "body": "another possibility (that does not rely on functions) is to introduce a new primitive value `undefined` so one would type:\r\n`$[?(@.prop != undefined)]`",
+          "createdAt": "2022-03-29T18:20:04Z",
+          "updatedAt": "2022-03-29T18:20:04Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Unfortunately, there isn't much of a consensus among implementations: [comparison project example](https://cburgmer.github.io/json-path-comparison/results/filter_expression_with_value.html).",
+          "createdAt": "2022-03-30T09:41:08Z",
+          "updatedAt": "2022-03-30T09:41:08Z"
+        },
+        {
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "body": "In a statically typed language with a Boolean-typed variable `x`,\r\n\r\n```\r\nif x == true {...}\r\n```\r\n\r\ndefinitely is a code smell, usually outing a complete noob.\r\n\r\nBut this isn't a statically typed language with a Boolean type.\r\n(JSON is schema-free and thus dynamically typed, and there is nothing that even justifies the introduction of RFC 8259 to mention \"booleans\" (sic); the [actual definition](https://www.rfc-editor.org/rfc/rfc8259#section-3) only knows the three separate and independent values false, null, and true.)",
+          "createdAt": "2022-03-30T10:47:58Z",
+          "updatedAt": "2022-03-30T10:47:58Z"
+        },
+        {
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> JSON is schema-free and thus dynamically typed\r\n\r\nThis is just wrong.  _Javascript_ is dynamically typed because it considers objects with different property sets to be different types.  _JSON_ is statically typed: objects, arrays, strings, numbers, and the constants `true`, `false`, and `null`.  (Practically speaking, `true` and `false` are booleans.  Making this distinction is splitting hairs and not worth our time.)  For JSON, objects with different property sets, while they are not equivalent, are still the same type: `object`.\r\n\r\n> introduce a new primitive value `undefined`...\r\n\r\nWe've had plenty of conversations stating that we don't want to introduce `undefined` as a value.  To reiterate the above, JSON isn't Javascript; there is no `undefined` in JSON.\r\n\r\n> `if x == true {...}` definitely is a code smell\r\n\r\nAgreed, but the point of the argument is that for the expression `!x`, `x` _appears_ to represent some boolean-ish value, and then the `!` operator is negating that result.\r\n\r\nWe also have declared that expressions in filter selectors (`[?(<expr>)]`) must return boolean values.\r\n\r\nThis results in a syntactical ambiguity for `[?(!@.foo)]`:\r\n\r\n- Is the user testing for the existence of a property?\r\n- Is the user testing for the \"truthiness\" of the value at that property?\r\n\r\nThe _only_ way to know for sure is by forcing `!` followed by a local path (e.g. `!@.foo`) to mean an existence test, which means the _only_ way to check for \"truthiness\" is to compare with a `true` or `false` constant.\r\n\r\nFor what it's worth, my implementation, https://json-everything.net/json-path, returns all three items for the example above, acting as a true existence test.  This means that for my library, you MUST use `x == true` to only get the \"truthy\" ones.\r\n\r\n---\r\n\r\nTo summarize, I see two options to resolve this ambiguity:\r\n\r\n1. An expression in the form `!@.foo` is defined explicitly as an existence test, which forces path authors to use expressions like `x == true` for \"truthiness\" checks (would return three items from the above example).\r\n2. Expressions strictly return booleans except in the special case of `!@.foo`, for which the expression is \"truthy\" or \"falsy.\"  This forces some other form of existence test, e.g. a function form like `exists(@.foo)` (would return two items from the above example).\r\n\r\n***NOTE** We've also discussed truthiness at length, and if I recall, we decided against it.  I use it here solely to illustrate my point.*",
+          "createdAt": "2022-03-30T11:49:21Z",
+          "updatedAt": "2022-03-30T11:51:29Z"
         }
       ]
     }
