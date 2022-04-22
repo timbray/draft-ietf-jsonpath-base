@@ -1399,7 +1399,7 @@ Examples
       |                   |        |           | as object key      |
       +-------------------+--------+-----------+--------------------+
 
-                     Table 15: Examples involving null
+            Table 15: Examples involving (or not involving) null
 
 3.7.  Normalized Paths
 
