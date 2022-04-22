@@ -3298,7 +3298,7 @@ components <span class="bcp14">MUST</span> be in the I-JSON range of exact value
         <h3 id="name-semantics-of-null">
 <a href="#section-3.6" class="section-number selfRef">3.6. </a><a href="#name-semantics-of-null" class="section-name selfRef">Semantics of <code>null</code></a>
         </h3>
-<p id="section-3.6-1">Note that JSON <code>null</code> is not  treated differently from any other JSON value (there is no special treatment as "undefined" or "missing").<a href="#section-3.6-1" class="pilcrow">¶</a></p>
+<p id="section-3.6-1">Note that JSON <code>null</code> is treated the same as any other JSON value: it is not taken to mean "undefined" or "missing".<a href="#section-3.6-1" class="pilcrow">¶</a></p>
 <div id="examples-9">
 <section id="section-3.6.1">
           <h4 id="name-examples-10">
@@ -3410,18 +3410,6 @@ components <span class="bcp14">MUST</span> be in the I-JSON range of exact value
                 <td class="text-left" rowspan="1" colspan="1"> </td>
                 <td class="text-center" rowspan="1" colspan="1"> </td>
                 <td class="text-left" rowspan="1" colspan="1">Comparison with "missing" value</td>
-              </tr>
-              <tr>
-                <td class="text-center" rowspan="1" colspan="1">
-                  <code>$.null</code>
-</td>
-                <td class="text-left" rowspan="1" colspan="1">
-                  <code>1</code>
-</td>
-                <td class="text-center" rowspan="1" colspan="1">
-                  <code>$['null']</code>
-</td>
-                <td class="text-left" rowspan="1" colspan="1">Not JSON null at all, just a string as object key</td>
               </tr>
             </tbody>
           </table>
