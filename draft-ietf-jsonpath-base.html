@@ -12,15 +12,15 @@
        JSONPath defines a string syntax for selecting and extracting values
 within a JavaScript Object Notation (JSON, RFC 8259) value. 
     " name="description">
-<meta content="xml2rfc 3.12.3" name="generator">
+<meta content="xml2rfc 3.12.4" name="generator">
 <meta content="JSON" name="keyword">
 <meta content="draft-ietf-jsonpath-base-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.12.3
+  xml2rfc 3.12.4
     Python 3.9.7
     appdirs 1.4.4
     ConfigArgParse 1.3
-    google-i18n-address 2.5.0
+    google-i18n-address 2.5.1
     html5lib 1.1
     intervaltree 3.1.0
     Jinja2 2.11.3
@@ -1044,11 +1044,11 @@ svg [stroke="fill"], svg [fill^="#fff"] {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">JSONPath</td>
-<td class="right">March 2022</td>
+<td class="right">April 2022</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Gössner, et al.</td>
-<td class="center">Expires 23 September 2022</td>
+<td class="center">Expires 24 October 2022</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1061,12 +1061,12 @@ svg [stroke="fill"], svg [fill^="#fff"] {
 <dd class="internet-draft">draft-ietf-jsonpath-base-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-03-22" class="published">22 March 2022</time>
+<time datetime="2022-04-22" class="published">22 April 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2022-09-23">23 September 2022</time></dd>
+<dd class="expires"><time datetime="2022-10-24">24 October 2022</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1125,7 +1125,7 @@ within a JavaScript Object Notation (JSON, RFC 8259) value.<a href="#section-abs
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 23 September 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 24 October 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -3340,6 +3340,55 @@ normal-HEXDIG             = DIGIT / %x61-66   ; "0"-"9", "a"-"f"
 normal-element-index      = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
 </pre><a href="#section-3.6-7" class="pilcrow">¶</a>
 </div>
+<div id="examples-9">
+<section id="section-3.6.1">
+          <h4 id="name-examples-10">
+<a href="#name-examples-10" class="section-name selfRef">Examples</a>
+          </h4>
+<span id="name-normalized-path-examples"></span><table class="center" id="table-15">
+            <caption>
+<a href="#table-15" class="selfRef">Table 15</a>:
+<a href="#name-normalized-path-examples" class="selfRef">Normalized Path examples</a>
+            </caption>
+<thead>
+              <tr>
+                <th class="text-center" rowspan="1" colspan="1">Path</th>
+                <th class="text-center" rowspan="1" colspan="1">Normalized Path</th>
+                <th class="text-left" rowspan="1" colspan="1">Comment</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="text-center" rowspan="1" colspan="1">
+                  <code>$.a</code>
+</td>
+                <td class="text-center" rowspan="1" colspan="1">
+                  <code>$['a']</code>
+</td>
+                <td class="text-left" rowspan="1" colspan="1">Object value</td>
+              </tr>
+              <tr>
+                <td class="text-center" rowspan="1" colspan="1">
+                  <code>$[1]</code>
+</td>
+                <td class="text-center" rowspan="1" colspan="1">
+                  <code>$[1]</code>
+</td>
+                <td class="text-left" rowspan="1" colspan="1">Array index</td>
+              </tr>
+              <tr>
+                <td class="text-center" rowspan="1" colspan="1">
+                  <code>$.a.b[1:2]</code>
+</td>
+                <td class="text-center" rowspan="1" colspan="1">
+                  <code>$['a']['b'][1]</code>
+</td>
+                <td class="text-left" rowspan="1" colspan="1">Nested structure</td>
+              </tr>
+            </tbody>
+          </table>
+</section>
+</div>
 </section>
 </div>
 </section>
@@ -3636,12 +3685,12 @@ inspired by <span>[<a href="#SLICE" class="xref">SLICE</a>]</span> from ECMASCRI
 $.store.book[?(@.price &lt; 10)].title
 </pre><a href="#appendix-A.1-5" class="pilcrow">¶</a>
 </div>
-<p id="appendix-A.1-6"><a href="#tbl-xpath-overview" class="xref">Table 15</a> extends <a href="#tbl-overview" class="xref">Table 1</a> by providing a comparison
+<p id="appendix-A.1-6"><a href="#tbl-xpath-overview" class="xref">Table 16</a> extends <a href="#tbl-overview" class="xref">Table 1</a> by providing a comparison
 with similar XPath concepts.<a href="#appendix-A.1-6" class="pilcrow">¶</a></p>
 <span id="name-xpath-syntax-compared-to-js"></span><div id="tbl-xpath-overview">
-<table class="center" id="table-15">
+<table class="center" id="table-16">
           <caption>
-<a href="#table-15" class="selfRef">Table 15</a>:
+<a href="#table-16" class="selfRef">Table 16</a>:
 <a href="#name-xpath-syntax-compared-to-js" class="selfRef">XPath syntax compared to JSONPath</a>
           </caption>
 <thead>
@@ -3760,12 +3809,12 @@ with similar XPath concepts.<a href="#appendix-A.1-6" class="pilcrow">¶</a></p>
           </tbody>
         </table>
 </div>
-<p id="appendix-A.1-8">For further illustration, <a href="#tbl-xpath-equivalents" class="xref">Table 16</a> shows some XPath expressions
+<p id="appendix-A.1-8">For further illustration, <a href="#tbl-xpath-equivalents" class="xref">Table 17</a> shows some XPath expressions
 and their JSONPath equivalents.<a href="#appendix-A.1-8" class="pilcrow">¶</a></p>
 <span id="name-example-xpath-expressions-a"></span><div id="tbl-xpath-equivalents">
-<table class="center" id="table-16">
+<table class="center" id="table-17">
           <caption>
-<a href="#table-16" class="selfRef">Table 16</a>:
+<a href="#table-17" class="selfRef">Table 17</a>:
 <a href="#name-example-xpath-expressions-a" class="selfRef">Example XPath expressions and their JSONPath equivalents</a>
           </caption>
 <thead>

@@ -5,10 +5,10 @@
 JSONPath WG                                              S. Gössner, Ed.
 Internet-Draft                                   Fachhochschule Dortmund
 Intended status: Standards Track                      G. Normington, Ed.
-Expires: 23 September 2022                                              
+Expires: 24 October 2022                                                
                                                          C. Bormann, Ed.
                                                   Universität Bremen TZI
-                                                           22 March 2022
+                                                           22 April 2022
 
 
                   JSONPath: Query expressions for JSON
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 23 September 2022.
+   This Internet-Draft will expire on 24 October 2022.
 
 Copyright Notice
 
@@ -1418,6 +1418,20 @@ Examples
    normal-HEXDIG             = DIGIT / %x61-66   ; "0"-"9", "a"-"f"
    normal-element-index      = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
 
+Examples
+
+            +============+=================+==================+
+            |    Path    | Normalized Path | Comment          |
+            +============+=================+==================+
+            |    $.a     |      $['a']     | Object value     |
+            +------------+-----------------+------------------+
+            |    $[1]    |       $[1]      | Array index      |
+            +------------+-----------------+------------------+
+            | $.a.b[1:2] |  $['a']['b'][1] | Nested structure |
+            +------------+-----------------+------------------+
+
+                     Table 15: Normalized Path examples
+
 4.  IANA Considerations
 
 4.1.  Registration of Media Type application/jsonpath
@@ -1622,7 +1636,7 @@ A.1.  JSONPath and XPath
 
    $.store.book[?(@.price < 10)].title
 
-   Table 15 extends Table 1 by providing a comparison with similar XPath
+   Table 16 extends Table 1 by providing a comparison with similar XPath
    concepts.
 
     +==========+==================+===================================+
@@ -1666,9 +1680,9 @@ A.1.  JSONPath and XPath
     | ()       | n/a              | grouping                          |
     +----------+------------------+-----------------------------------+
 
-                Table 15: XPath syntax compared to JSONPath
+                Table 16: XPath syntax compared to JSONPath
 
-   For further illustration, Table 16 shows some XPath expressions and
+   For further illustration, Table 17 shows some XPath expressions and
    their JSONPath equivalents.
 
    +======================+========================+===================+
@@ -1715,7 +1729,7 @@ A.1.  JSONPath and XPath
    |                      |                        | input value       |
    +----------------------+------------------------+-------------------+
 
-     Table 16: Example XPath expressions and their JSONPath equivalents
+     Table 17: Example XPath expressions and their JSONPath equivalents
 
    XPath has a lot more functionality (location paths in unabbreviated
    syntax, operators and functions) than listed in this comparison.
