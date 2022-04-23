@@ -5,10 +5,10 @@
 JSONPath WG                                              S. Gössner, Ed.
 Internet-Draft                                   Fachhochschule Dortmund
 Intended status: Standards Track                      G. Normington, Ed.
-Expires: 24 October 2022                                                
+Expires: 25 October 2022                                                
                                                          C. Bormann, Ed.
                                                   Universität Bremen TZI
-                                                           22 April 2022
+                                                           23 April 2022
 
 
                   JSONPath: Query expressions for JSON
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 October 2022.
+   This Internet-Draft will expire on 25 October 2022.
 
 Copyright Notice
 
@@ -166,14 +166,13 @@ Table of Contents
 
    Children (of a node):  If the node is an array, each of its elements,
       or if the node is an object, each its member values (but not its
-      member names).
+      member names).  If the node is neither an array nor an object, it
+      has no descendants.
 
-   Descendants (of a node):  The node itself, plus the descendants of
-      each of its children.
-      // Note that this is often more selectively called descendant-or-
-      // self.  Should we define descendants non-inclusive of the node
-      // itself?  We do have the language to say "node + descendants" in
-      // several places.
+   Descendants (of a node):  The children of the node, together with the
+      children of its children, and so forth recursively.  More
+      formally, the descendants relation between nodes is the transitive
+      closure of the children relation.
 
    Nodelist:  A list of nodes.  The output of applying a query to an
       argument is manifested as a list of nodes.  While this list can be
@@ -240,7 +239,7 @@ Table of Contents
 
    JSONPath allows the wildcard symbol * to select any member of an
    object or any element of an array (Section 3.5.3).  The descendant
-   operator .. selects the node and all its descendants (Section 3.5.7).
+   operator .. selects all the descendants (Section 3.5.7) of a node.
    The array slice syntax [start:end:step] allows selecting a regular
    selection of an element from an array, giving a start position, an
    end position, and possibly a step value that moves the position from
@@ -267,7 +266,7 @@ Table of Contents
         | ['name']  | child selectors for JSON objects: index     |
         |           | selector (Section 3.5.4)                    |
         +-----------+---------------------------------------------+
-        | ..        | nested descendants: descendant selector     |
+        | ..        | descendants: descendant selector            |
         |           | (Section 3.5.7)                             |
         +-----------+---------------------------------------------+
         | *         | all child member values and array elements: |
@@ -537,7 +536,7 @@ Table of Contents
    *  Array slice selector [<start>:<end>:<step>], where the optional
       values <start>, <end>, and <step> are integer literals.
 
-   *  Nested descendants selector ...
+   *  Descendants selector ...
 
    *  List selector [<sel1>,<sel2>,...,<selN>], holding a comma
       separated list of index and slice selectors.
@@ -1066,10 +1065,23 @@ Syntax
 
 Semantics
 
-   The descendant-selector selects the node and all its descendants.
+   The descendant-selector selects certain descendants of a node:
 
-   In the resultant nodelist: * nodes occur before their children, and *
-   nodes of an array occur in array order.
+   *  the ..<name> form (and the ..[<index>] form where <index> is a
+      quoted-member-name) selects those descendants of the node that are
+      member values of an object with the given member name.
+
+   *  the ..[<index>] where <index> is an element-index selects those
+      descendants of the node that are array elements with the given
+      index.
+
+   *  the ..[*] and ..* forms select all the descendants of the node.
+
+   In the resultant nodelist:
+
+   *  nodes occur before their children, and
+
+   *  nodes of an array occur in array order.
 
    Children of an object may occur in any order, since JSON objects are
    unordered.
@@ -1080,53 +1092,61 @@ Examples
 
    {
      "o": {"j": 1, "k": 2},
-     "a": [5, 3]
+     "a": [5, 3, [{"j": 4}]]
    }
 
    Queries:
 
-         +========+=====================+=============+=========+
-         | Query  | Result              |    Result   | Comment |
-         |        |                     |    Paths    |         |
-         +========+=====================+=============+=========+
-         |  $..j  | 1                   | $['o']['j'] | Object  |
-         |        |                     |             | values  |
-         +--------+---------------------+-------------+---------+
-         | $..[0] | 5                   |  $['a'][0]  | Array   |
-         |        |                     |             | values  |
-         +--------+---------------------+-------------+---------+
-         | $..[*] | {"o": {"j": 1, "k": |    $['0']   | All     |
-         |        | 2}, "a": [5, 3]}    |    $['a']   | values  |
-         |        | {"j": 1, "k" : 2}   | $['o']['j'] |         |
-         |        | [5, 3]              | $['o']['k'] |         |
-         |        | 1                   |  $['a'][0]  |         |
-         |        | 2                   |  $['a'][1]  |         |
-         |        | 5                   |             |         |
-         |        | 3                   |             |         |
-         +--------+---------------------+-------------+---------+
-         |  $..*  | {"o": {"j": 1, "k": |    $['0']   | All     |
-         |        | 2}, "a": [5, 3]}    |    $['a']   | values  |
-         |        | {"j": 1, "k" : 2}   | $['o']['j'] |         |
-         |        | [5, 3]              | $['o']['k'] |         |
-         |        | 1                   |  $['a'][0]  |         |
-         |        | 2                   |  $['a'][1]  |         |
-         |        | 5                   |             |         |
-         |        | 3                   |             |         |
-         +--------+---------------------+-------------+---------+
+     +========+====================+===================+=============+
+     | Query  | Result             |    Result Paths   | Comment     |
+     +========+====================+===================+=============+
+     |  $..j  | 1                  |    $['o']['j']    | Object      |
+     |        | 4                  | $['a'][2][0]['j'] | values      |
+     +--------+--------------------+-------------------+-------------+
+     |  $..j  | 4                  | $['a'][2][0]['j'] | Alternative |
+     |        | 1                  |    $['o']['j']    | result      |
+     +--------+--------------------+-------------------+-------------+
+     | $..[0] | 5                  |     $['a'][0]     | Array       |
+     |        | {"j": 4}           |    $['a'][2][0]   | values      |
+     +--------+--------------------+-------------------+-------------+
+     | $..[0] | {"j": 4}           |    $['a'][2][0]   | Alternative |
+     |        | 5                  |     $['a'][0]     | result      |
+     +--------+--------------------+-------------------+-------------+
+     | $..[*] | {"j": 1, "k" : 2}  |       $['o']      | All values  |
+     |        | [5, 3, [{"j": 4}]] |       $['a']      |             |
+     |        | 1                  |    $['o']['j']    |             |
+     |        | 2                  |    $['o']['k']    |             |
+     |        | 5                  |     $['a'][0]     |             |
+     |        | 3                  |     $['a'][1]     |             |
+     |        | [{"j": 4}]         |     $['a'][2]     |             |
+     |        | {"j": 4}           |    $['a'][2][0]   |             |
+     |        | 4                  | $['a'][2][0]['j'] |             |
+     +--------+--------------------+-------------------+-------------+
+     |  $..*  | [5, 3, [{"j": 4}]] |       $['a']      | All values  |
+     |        | {"j": 1, "k" : 2}  |       $['o']      |             |
+     |        | 2                  |    $['o']['k']    |             |
+     |        | 1                  |    $['o']['j']    |             |
+     |        | 5                  |     $['a'][0]     |             |
+     |        | 3                  |     $['a'][1]     |             |
+     |        | [{"j": 4}]         |     $['a'][2]     |             |
+     |        | {"j": 4}           |    $['a'][2][0]   |             |
+     |        | 4                  | $['a'][2][0]['j'] |             |
+     +--------+--------------------+-------------------+-------------+
 
-                  Table 11: Descendant selector examples
+                   Table 11: Descendant selector examples
 
-   Note: This ordering of the results for the $..[*] and $..* examples
+   Note: The ordering of the results for the $..[*] and $..* examples
    above is not guaranteed, except that:
-
-   *  {"o": {"j": 1, "k": 2}, "a": [5, 3]} must appear before {"j": 1,
-      "k": 2} and [5, 3],
 
    *  {"j": 1, "k": 2} must appear before 1 and 2,
 
-   *  [5, 3] must appear before 5 and 3, and
+   *  [5, 3, [{"j": 4}]] must appear before 5, 3, and [{"j": 4}],
 
-   *  5 must appear before 3.
+   *  5 must appear before 3 which must appear before [{"j": 4}],
+
+   *  [{"j": 4}] must appear before {"j": 4}, and
+
+   *  {"j": 4} must appear before 4.
 
 3.5.8.  Filter Selector
 
@@ -1262,7 +1282,7 @@ Semantics
    numeric values only.  Using these operators to compare other types of
    values produces a "false" comparison result.
 
-   The semantics of regular expressions is as defined in
+   The semantics of regular expressions are as defined in
    [I-D.draft-bormann-jsonpath-iregexp].
 
 Examples
@@ -1430,6 +1450,20 @@ Examples
                                )
    normal-HEXDIG             = DIGIT / %x61-66   ; "0"-"9", "a"-"f"
    normal-element-index      = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
+
+Examples
+
+            +============+=================+==================+
+            |    Path    | Normalized Path | Comment          |
+            +============+=================+==================+
+            |    $.a     |      $['a']     | Object value     |
+            +------------+-----------------+------------------+
+            |    $[1]    |       $[1]      | Array index      |
+            +------------+-----------------+------------------+
+            | $.a.b[1:2] |  $['a']['b'][1] | Nested structure |
+            +------------+-----------------+------------------+
+
+                     Table 15: Normalized Path examples
 
 4.  IANA Considerations
 
@@ -1635,7 +1669,7 @@ A.1.  JSONPath and XPath
 
    $.store.book[?(@.price < 10)].title
 
-   Table 15 extends Table 1 by providing a comparison with similar XPath
+   Table 16 extends Table 1 by providing a comparison with similar XPath
    concepts.
 
     +==========+==================+===================================+
@@ -1649,8 +1683,8 @@ A.1.  JSONPath and XPath
     +----------+------------------+-----------------------------------+
     | ..       | n/a              | parent operator                   |
     +----------+------------------+-----------------------------------+
-    | //       | ..               | nested descendants (JSONPath      |
-    |          |                  | borrows this syntax from E4X)     |
+    | //       | ..               | descendants (JSONPath borrows     |
+    |          |                  | this syntax from E4X)             |
     +----------+------------------+-----------------------------------+
     | *        | *                | wildcard: All XML elements        |
     |          |                  | regardless of their names         |
@@ -1679,9 +1713,9 @@ A.1.  JSONPath and XPath
     | ()       | n/a              | grouping                          |
     +----------+------------------+-----------------------------------+
 
-                Table 15: XPath syntax compared to JSONPath
+                Table 16: XPath syntax compared to JSONPath
 
-   For further illustration, Table 16 shows some XPath expressions and
+   For further illustration, Table 17 shows some XPath expressions and
    their JSONPath equivalents.
 
    +======================+========================+===================+
@@ -1728,7 +1762,7 @@ A.1.  JSONPath and XPath
    |                      |                        | input value       |
    +----------------------+------------------------+-------------------+
 
-     Table 16: Example XPath expressions and their JSONPath equivalents
+     Table 17: Example XPath expressions and their JSONPath equivalents
 
    XPath has a lot more functionality (location paths in unabbreviated
    syntax, operators and functions) than listed in this comparison.
