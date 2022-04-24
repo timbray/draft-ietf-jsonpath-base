@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-04-03T01:43:30.435940+00:00",
+  "timestamp": "2022-04-24T01:43:31.399582+00:00",
   "repo": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
   "labels": [
     {
@@ -3480,7 +3480,7 @@
       "id": "MDU6SXNzdWU4MjgxODU2ODM=",
       "title": "Examples Appendix",
       "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/69",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "fiestajetsam",
       "authorAssociation": "MEMBER",
       "assignees": [
@@ -3491,8 +3491,8 @@
       ],
       "body": "As was brought up by Kristina via Jabber:\r\n\r\n> Is there any way we could quickly resolve not to change the most basic obj.first.second and other pathing syntax, so that implementers who are using those things today can feel safer that they\u2019re not going to get hit with a breaking change?\r\n\r\nCarsten suggested:\r\n\r\n> Could start an examples appendix where we all agree what the result should be. E.g. $.a.b is one such example where we all agree. But there are questions about what happens when one such item is an array.\r\n",
       "createdAt": "2021-03-10T18:46:28Z",
-      "updatedAt": "2022-03-09T10:21:52Z",
-      "closedAt": null,
+      "updatedAt": "2022-04-22T23:43:08Z",
+      "closedAt": "2022-04-22T23:43:08Z",
       "comments": [
         {
           "author": "timbray",
@@ -3528,6 +3528,20 @@
           "body": "> > Carsten suggested:\r\n> > > Could start an examples appendix where we all agree what the result should be. E.g. $.a.b is one such example where we all agree. But there are questions about what happens when one such item is an array.\r\n> \r\n> Strictly speaking, even for this there isn't agreement, in the [JSONPath Comparisons](https://cburgmer.github.io/json-path-comparison/), 9 out of 41 implementations return a single value where only one match is possible (instead of an array of a single value).\r\n\r\nHow multi-valued results are shown in our examples needs to be worked out.\r\nThe result is not a single JSON data item that wasn't in the input (the array constructed in the API), but a nodelist.\r\n",
           "createdAt": "2021-03-17T09:30:45Z",
           "updatedAt": "2021-03-17T09:30:45Z"
+        },
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Now that there are plenty of inline examples as well as the larger example in [section 2](file:///home/glyn/dev/ietf/internet-draft/draft-ietf-jsonpath-base.html#name-jsonpath-examples), I'm wondering if an Examples Appendix is still needed and, if so, what kind of thing it should contain. Of course, we could move section 2 to an Appendix, but I think it 's quite good to give the reader a more gentle introduction before getting into the details.",
+          "createdAt": "2022-04-22T13:18:22Z",
+          "updatedAt": "2022-04-22T13:18:22Z"
+        },
+        {
+          "author": "timbray",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> Now that there are plenty of inline examples as well as the larger example in section 2, I'm wondering if an Examples Appendix is still needed and, if so, what kind of thing it should contain. Of course, we could move section 2 to an Appendix, but I think it 's quite good to give the reader a more gentle introduction before getting into the details.\r\n\r\nI agree. Let's close this one.",
+          "createdAt": "2022-04-22T21:14:49Z",
+          "updatedAt": "2022-04-22T21:14:49Z"
         }
       ]
     },
@@ -5562,7 +5576,7 @@
       ],
       "body": "When looking up object member names (dot selector or index selector) normalization of strings becomes an issue. See https://en.wikipedia.org/wiki/Unicode_equivalence#Normalization for an introduction on normalization in Unicode. \r\n\r\nAs indicated with one test in the comparison project (https://cburgmer.github.io/json-path-comparison/#bracket_notation_with_NFC_path_on_NFD_key) it seems though that there is consensus not to respect equivalent code points. The Raku implementation is the only one that matches the equivalent key, which seems to stem from the Raku runtime already normalizing strings upfront (if my manual tests are to be believed).\r\n\r\nIs this something we want to prescribe in a standard, or would we end up with advice possibly contradicting the implementation of JSON parsers? (A quick search turned up http://seriot.ch/parsing_json.php which complains about different implementation in parsers with respect to string normalization.)",
       "createdAt": "2021-08-30T15:08:46Z",
-      "updatedAt": "2022-03-09T10:29:47Z",
+      "updatedAt": "2022-04-22T21:17:29Z",
       "closedAt": null,
       "comments": [
         {
@@ -5641,6 +5655,13 @@
           "body": "Please, no normalization. On that path lies madness. ",
           "createdAt": "2022-03-01T20:04:48Z",
           "updatedAt": "2022-03-01T20:04:48Z"
+        },
+        {
+          "author": "timbray",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "I think, however, that there should be a note in the text (if there isn't already, haven't checked) making it explicit that implementations MUST NOT normalize before comparing member names and string values. ",
+          "createdAt": "2022-04-22T21:17:29Z",
+          "updatedAt": "2022-04-22T21:17:29Z"
         }
       ]
     },
@@ -6924,15 +6945,15 @@
       "id": "I_kwDOEIqrgc5D5nYd",
       "title": "Normalized Paths and normalization",
       "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/155",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "benkehoe",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "The [current definition for Normalized Paths](https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/blob/ca83d54f420576b03d0700e201c5447a2b96aa0b/draft-ietf-jsonpath-base.md#normalized-paths) is a separate grammar that happens to be a subset of the general path grammar. Would it make sense to make it more directly a subset (e.g., as a set of constraints on selectors), which could then include a \"normalization\" operation that takes a standard path and returns a Normalized Path or an error if it cannot be normalized?\r\n\r\nA use case: if I am a developer intending to provide an interface that accepts a JSON Path that must refer to a single element, is it reasonable for me to expect that a user of that interface knows what Normalized Paths are such that I can require a Normalized Path (for example, they know they must use single quotes, not double quotes), or would it be better to allow them to specify a standard path and then attempt to normalize it as part of input validation?",
       "createdAt": "2022-02-15T20:21:56Z",
-      "updatedAt": "2022-03-01T19:59:48Z",
-      "closedAt": null,
+      "updatedAt": "2022-04-19T20:01:36Z",
+      "closedAt": "2022-04-19T20:01:35Z",
       "comments": [
         {
           "author": "gregsdennis",
@@ -7234,6 +7255,13 @@
           "body": "Speaking as lead designer of the Amazon States Language and implementer of validators for that language, the \"Reference Path\" notion was certainly useful at an application level. The very basic description provided at https://states-language.net/#ref-paths drew no complaints that I can remember.  So the evidence suggests that (a) the notion is useful but (b) it's easy enough to cook up your own if you need it.\r\n\r\nMy position is neutral, i.e. I'll go with whatever the WG is leaning to.",
           "createdAt": "2022-03-01T19:59:48Z",
           "updatedAt": "2022-03-01T19:59:48Z"
+        },
+        {
+          "author": "benkehoe",
+          "authorAssociation": "NONE",
+          "body": "To close this out, in #164 the term \"Singular Path\" was defined in the Terminology section, and a grammar for it is defined in the filter selector section, where paths are required to be singular. In an issue like https://github.com/gregsdennis/json-everything/issues/224, a user could ask for replacement of JSON Pointer in an API with JSONPath Singular Paths (whether that's appropriate for a given API is a separate topic!) and a user of a JSONPath library like https://github.com/json-path/JsonPath could ask for an `isSingularPath()` method. Thanks so much!",
+          "createdAt": "2022-04-19T20:01:35Z",
+          "updatedAt": "2022-04-19T20:01:35Z"
         }
       ]
     },
@@ -7580,13 +7608,16 @@
       "state": "OPEN",
       "author": "glyn",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "glyn"
+      ],
       "labels": [
-        "task"
+        "task",
+        "has PR"
       ],
       "body": "The notes need separating out into paragraphs.\r\n\r\nThe semantics section needs to be expanded.",
       "createdAt": "2022-03-09T13:48:06Z",
-      "updatedAt": "2022-03-09T13:48:06Z",
+      "updatedAt": "2022-04-22T10:50:09Z",
       "closedAt": null,
       "comments": []
     },
@@ -7598,13 +7629,16 @@
       "state": "OPEN",
       "author": "glyn",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "glyn"
+      ],
       "labels": [
-        "task"
+        "task",
+        "has PR"
       ],
       "body": "The current spec is silent about how `null` is handled in many situations:\r\n\r\n1. What is the result of applying the JSONPath `$` to the JSON document `null`?\r\n2. What is the result of applying the JSONPath `$.*` to the JSON document `{\"a\": null}`? The [comparison consensus](https://cburgmer.github.io/json-path-comparison/results/dot_notation_on_null_value.html) implies a node set with the single value `null`.\r\n3. What is the result of applying the JSONPath `$[*]` to the JSON document `[null]`? The [comparison consensus](https://cburgmer.github.io/json-path-comparison/results/bracket_notation_with_wildcard_on_null_value_array.html) implies a node set with the single value `null`.\r\n4. What is the result of applying the JSONPath `$[0]` to the JSON document `[null]`? Presumably a node set with the single value `null`.\r\n5. What is the result of applying the JSONPath `$[1:2]` to the JSON document `[\"a\", null, \"b\"]`? Presumably a node set with the values `\"a\"` and `null`.\r\n6. What is the result of applying the JSONPath `$[?@]` to the JSON document `[\"a\", null, \"b\"]`?\r\n7. What is the result of applying the JSONPath `$[?@.a]` to the JSON document `[{\"a\": null}]`?\r\n8. What is the result of applying the JSONPath `$.null` to the JSON document `{\"null\": \"value\"}`? The [comparison consensus](https://cburgmer.github.io/json-path-comparison/results/dot_notation_with_key_named_null.html) implies a node set with the single value `\"value\"`.",
       "createdAt": "2022-03-15T05:06:38Z",
-      "updatedAt": "2022-03-15T14:19:46Z",
+      "updatedAt": "2022-04-22T10:10:42Z",
       "closedAt": null,
       "comments": [
         {
@@ -7659,18 +7693,20 @@
       "id": "I_kwDOEIqrgc5GD-Dz",
       "title": "Descendant semantics",
       "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/177",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bram209",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "glyn"
+      ],
       "labels": [
         "task",
         "has PR"
       ],
       "body": "### Dot Wildcard Selector\r\n> A dot-wild-selector acts as a wildcard by selecting the nodes of all member values of an object in its input nodelist as well as all element nodes of an array in its input nodelist.\r\n\r\nConsidering the following input:\r\n```json\r\n{\r\n  \"o\": {\"j\": 1, \"k\": 2},\r\n  \"a\": [5, 3]\r\n}\r\n```\r\n\r\n`$.*` would evaluate to (in this case the values of the object):\r\n\r\n```json\r\n[\r\n  {\"j\": 1, \"k\": 2},\r\n  [5, 3]\r\n]\r\n```\r\n\r\n### Descendant Selector\r\n\r\nI would expect the descendant version: `$..*` to evaluate to:\r\n```json\r\n[\r\n  {\"j\": 1, \"k\": 2},\r\n  [5, 3],\r\n  1,\r\n  2,\r\n  5,\r\n  3\r\n]\r\n```\r\n\r\nYet the example says:\r\n```json\r\n[\r\n  { \"o\": {\"j\": 1, \"k\": 2}, \"a\": [5, 3] }, // full input is selected, even tho the dot wildcard selector would only select the object values\r\n  {\"j\": 1, \"k\": 2},\r\n  [5, 3],\r\n  1,\r\n  2,\r\n  5,\r\n  3\r\n]\r\n```\r\nConsidering the following pseudo logic:\r\n```\r\nfunction traverse(json_value, child_selector) {\r\n     if (json_value == array) {\r\n          return child_selector.select(json_value) + json_value.map(x => traverse(x, child_selector));\r\n    } else if (json_value == object) {\r\n          return child_selector.select(json_value) + json_value.values.map(x => traverse(x, child_selector));\r\n   } else {\r\n         return [];\r\n   }\r\n}\r\n```\r\n\r\nIn the case of `$..*` the `child_selector` would be an index wildcard selector.\r\n\r\n### Expected Descendant semantics\r\nI would expect the descendant selector to (starting by selecting itself) walk through the json structure and select all the results by applying the child selector (dot-member-name, index-selector, index-wild-selector, or wildcard) on each traversed value.\r\n\r\nAm I misunderstanding something here or is this the intended behavior?\r\n",
       "createdAt": "2022-03-21T14:11:08Z",
-      "updatedAt": "2022-03-25T17:51:36Z",
-      "closedAt": null,
+      "updatedAt": "2022-04-22T23:44:10Z",
+      "closedAt": "2022-04-22T23:44:10Z",
       "comments": [
         {
           "author": "glyn",
@@ -28314,11 +28350,13 @@
       "state": "OPEN",
       "author": "cabo",
       "authorAssociation": "MEMBER",
-      "assignees": [],
+      "assignees": [
+        "cabo"
+      ],
       "labels": [],
       "body": "Close #25 \r\n",
       "createdAt": "2022-03-18T17:53:55Z",
-      "updatedAt": "2022-03-19T14:37:45Z",
+      "updatedAt": "2022-04-23T00:27:05Z",
       "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
       "baseRefName": "main",
       "baseRefOid": "da0bdb21073f372ce77c8bdfc2c372477103fbfe",
@@ -28460,6 +28498,146 @@
               "body": "The following is simpler, if it's accurate:\r\n```suggestion\r\n* the way JSONPath is used in security checks.\r\n```",
               "createdAt": "2022-03-19T14:37:44Z",
               "updatedAt": "2022-03-19T14:37:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44qJM6",
+          "commit": {
+            "abbreviatedOid": "0e0c488"
+          },
+          "author": "timbray",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T20:58:52Z",
+          "updatedAt": "2022-04-22T20:58:52Z",
+          "comments": [
+            {
+              "originalPosition": 48,
+              "body": "I think it would be simpler to point to the security-considerations section or I-Regexp, which describes the use of toxic regexps to accomplish denial-of-service, and how the use of I-Regexp somewhat addresses that problem.",
+              "createdAt": "2022-04-22T20:58:52Z",
+              "updatedAt": "2022-04-22T20:58:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44qJNY",
+          "commit": {
+            "abbreviatedOid": "0e0c488"
+          },
+          "author": "timbray",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T20:58:54Z",
+          "updatedAt": "2022-04-22T20:58:55Z",
+          "comments": [
+            {
+              "originalPosition": 43,
+              "body": "This is related to the common security command with JSON-formatted protocol elements: Thou shalt not use eval().\r\n\r\nBut\u2026 I'm thinking of evaluating JSONpaths in JS and it's not obvious where it'd be attractive to feed fragments to eval() or equivalent. So I'm not 100% convinced this needs to be said.  Or is there an obvious example that I'm missing?",
+              "createdAt": "2022-04-22T20:58:54Z",
+              "updatedAt": "2022-04-22T20:58:55Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44qJYe",
+          "commit": {
+            "abbreviatedOid": "0e0c488"
+          },
+          "author": "timbray",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T20:59:59Z",
+          "updatedAt": "2022-04-22T20:59:59Z",
+          "comments": [
+            {
+              "originalPosition": 68,
+              "body": "Fair enough, but why is this a security consideration?",
+              "createdAt": "2022-04-22T20:59:59Z",
+              "updatedAt": "2022-04-22T21:00:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44qRwd",
+          "commit": {
+            "abbreviatedOid": "0e0c488"
+          },
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T21:40:10Z",
+          "updatedAt": "2022-04-22T21:40:10Z",
+          "comments": [
+            {
+              "originalPosition": 68,
+              "body": "In any check/use situation.\r\n(A protective application [that checks data to protect another application] cannot rely on the protected application [that uses the data] to make exactly the same recognition decisions.)",
+              "createdAt": "2022-04-22T21:40:10Z",
+              "updatedAt": "2022-04-22T21:40:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44qSUB",
+          "commit": {
+            "abbreviatedOid": "0e0c488"
+          },
+          "author": "timbray",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T21:44:30Z",
+          "updatedAt": "2022-04-22T21:44:31Z",
+          "comments": [
+            {
+              "originalPosition": 68,
+              "body": "Does this presuppose that the protected application needs to be protected from objects with members that appear in a particular order?  I'm really having trouble imagining a situation where this makes a difference that could constitute a vulnerability.",
+              "createdAt": "2022-04-22T21:44:31Z",
+              "updatedAt": "2022-04-22T21:44:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44qVU5",
+          "commit": {
+            "abbreviatedOid": "0e0c488"
+          },
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T22:08:13Z",
+          "updatedAt": "2022-04-22T22:08:14Z",
+          "comments": [
+            {
+              "originalPosition": 68,
+              "body": "Let's say the protective application needs to avoid data that say {\"rocket\": \"launch\"} ever reaching the protected application.  Let's say the two differ in the way they handle duplicate keys.\r\n\r\nOr let's say the protected handles the JSON data as it comes in, with a streaming parser, giving the attacker way more leverage to create check/use situations.\r\n\r\n(Generally speaking, the problem with \"proof by lack of imagination\" in security considerations is that the set of attackers collectively have way more imagination than we do.)",
+              "createdAt": "2022-04-22T22:08:13Z",
+              "updatedAt": "2022-04-22T22:08:14Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44qwA9",
+          "commit": {
+            "abbreviatedOid": "0e0c488"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-23T00:27:04Z",
+          "updatedAt": "2022-04-23T00:27:05Z",
+          "comments": [
+            {
+              "originalPosition": 61,
+              "body": "@cabo How about this more radical simplification which generalises the protector/protected scenario and IMO is much easier to digest?\r\n```suggestion\r\nWhere JSONPath is used as a part of a security mechanism, attackers\r\ncan attempt to evoke unexpected behavior, or take advantage of\r\ndifferences in behavior between JSONPath implementations.\r\n```",
+              "createdAt": "2022-04-23T00:27:04Z",
+              "updatedAt": "2022-04-23T00:27:05Z"
             }
           ]
         }
@@ -28696,50 +28874,100 @@
       "id": "PR_kwDOEIqrgc40sLPW",
       "title": "Normalized Path inline examples",
       "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/176",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "glyn",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "glyn"
+      ],
       "labels": [],
       "body": "",
       "createdAt": "2022-03-19T15:20:09Z",
-      "updatedAt": "2022-03-25T17:28:08Z",
+      "updatedAt": "2022-04-22T23:41:31Z",
       "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
       "baseRefName": "main",
       "baseRefOid": "2585fc8847ebb5753e95442705b3fcc32c800af6",
       "headRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
       "headRefName": "inline-examples-normalized-paths",
       "headRefOid": "7b94dddbec68a7aa9615fe7638b8387b0ff5398d",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
-      "reviews": []
+      "closedAt": "2022-04-22T23:41:27Z",
+      "mergedAt": "2022-04-22T23:41:27Z",
+      "mergedBy": "glyn",
+      "mergeCommit": {
+        "oid": "121ce15cf75cf045fa8f04b2259d59d519684cab"
+      },
+      "comments": [
+        {
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> In the first two examples, the Path and Normalized path are equivalent in what they identify. Not so for the third because the Path produces a plural result and thus cannot be normalized. This should probably be noted?\r\n\r\n`$.a.b[1:2]` can only produce a singular result since the slice `[1:2]` is equivalent to the index `[1]`. Agreed?",
+          "createdAt": "2022-04-22T23:33:54Z",
+          "updatedAt": "2022-04-22T23:33:54Z"
+        },
+        {
+          "author": "timbray",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> \r\n\r\nD'oh of course",
+          "createdAt": "2022-04-22T23:36:26Z",
+          "updatedAt": "2022-04-22T23:36:26Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOEIqrgc44qKXZ",
+          "commit": {
+            "abbreviatedOid": "7b94ddd"
+          },
+          "author": "timbray",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "In the first two examples, the Path and Normalized path are equivalent in what they identify. Not so for the third because the Path produces a plural result and thus cannot be normalized. This should probably be noted?",
+          "createdAt": "2022-04-22T21:06:04Z",
+          "updatedAt": "2022-04-22T21:06:04Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44qcxe",
+          "commit": {
+            "abbreviatedOid": "7b94ddd"
+          },
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-04-22T22:55:11Z",
+          "updatedAt": "2022-04-22T22:55:11Z",
+          "comments": []
+        }
+      ]
     },
     {
       "number": 179,
       "id": "PR_kwDOEIqrgc41CDg6",
       "title": "Descendant selector semantics",
       "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/179",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "glyn",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "glyn"
+      ],
       "labels": [],
       "body": "* Exclude the node itself\r\n* Define the term \"descendants\" more precisely\r\n* Define the descendant selector semantics more thoroughly\r\n\r\nFixes: https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/177",
       "createdAt": "2022-03-25T17:50:06Z",
-      "updatedAt": "2022-03-26T16:40:26Z",
+      "updatedAt": "2022-04-22T23:44:13Z",
       "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
       "baseRefName": "main",
       "baseRefOid": "f8b4801a05606a2aa3fc3a202e359ab9c1920963",
       "headRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
       "headRefName": "strict-descendant",
       "headRefOid": "bff40da421735a23eaa017eeb6f140aeb1b05c72",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2022-04-22T23:44:10Z",
+      "mergedAt": "2022-04-22T23:44:10Z",
+      "mergedBy": "glyn",
+      "mergeCommit": {
+        "oid": "d3d8455538266f218f3e5c15a5afc975686087a8"
+      },
       "comments": [
         {
           "author": "bram209",
@@ -28763,7 +28991,558 @@
           "updatedAt": "2022-03-26T16:40:25Z"
         }
       ],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOEIqrgc44qKrR",
+          "commit": {
+            "abbreviatedOid": "bff40da"
+          },
+          "author": "timbray",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "I haven't checked the examples, but I like the narrative changes.",
+          "createdAt": "2022-04-22T21:08:03Z",
+          "updatedAt": "2022-04-22T21:08:03Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 181,
+      "id": "PR_kwDOEIqrgc42nSn3",
+      "title": "Semantics of `null`",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/181",
+      "state": "OPEN",
+      "author": "glyn",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "glyn"
+      ],
+      "labels": [],
+      "body": "Fixes https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/171",
+      "createdAt": "2022-04-22T10:09:26Z",
+      "updatedAt": "2022-04-23T16:49:01Z",
+      "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "baseRefName": "main",
+      "baseRefOid": "f8b4801a05606a2aa3fc3a202e359ab9c1920963",
+      "headRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "headRefName": "null",
+      "headRefOid": "3beb502abe023df9d368f12ba3ad081b966cd0b7",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOEIqrgc44nYuN",
+          "commit": {
+            "abbreviatedOid": "43c0f34"
+          },
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T10:20:26Z",
+          "updatedAt": "2022-04-22T10:20:27Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "This really should be phrased as a note (there is no new normative statement here).  Maybe:\r\n\r\n```suggestion\r\nNote that JSON `null` is not  treated differently from any other JSON value (there is no special treatment as \"undefined\" or \"missing\").\r\n```",
+              "createdAt": "2022-04-22T10:20:27Z",
+              "updatedAt": "2022-04-22T10:20:27Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44nY37",
+          "commit": {
+            "abbreviatedOid": "43c0f34"
+          },
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T10:21:06Z",
+          "updatedAt": "2022-04-22T10:21:07Z",
+          "comments": [
+            {
+              "originalPosition": 27,
+              "body": "```suggestion\r\n| `$.null` | `1` | `$['null']` | Not JSON null at all, just a string as object key |\r\n```",
+              "createdAt": "2022-04-22T10:21:06Z",
+              "updatedAt": "2022-04-22T10:21:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44nY_X",
+          "commit": {
+            "abbreviatedOid": "43c0f34"
+          },
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T10:21:34Z",
+          "updatedAt": "2022-04-22T10:21:35Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "(which is not strictly true as the last one doesn't...)",
+              "createdAt": "2022-04-22T10:21:34Z",
+              "updatedAt": "2022-04-22T10:21:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44nZG_",
+          "commit": {
+            "abbreviatedOid": "43c0f34"
+          },
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "Good addition!  Please see my detailed comments.",
+          "createdAt": "2022-04-22T10:22:02Z",
+          "updatedAt": "2022-04-22T10:22:02Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44oOHv",
+          "commit": {
+            "abbreviatedOid": "43c0f34"
+          },
+          "author": "danielaparker",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T13:14:12Z",
+          "updatedAt": "2022-04-22T13:14:13Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "It's unclear what is meant by JSON null being a \"valid\" value, valid in what sense? as opposed to an \"invalid\" value?\r\n\r\nThis is about the semantics of the _JSONPath spec_, not the semantics of JSON `null`. For the example given of a query that doesn't evaluate to any results, `$.a[0]`, the spec writers could reasonably choose from several alternatives: (1) stay within the JSON type system, and have it evaluate to one of the JSON values, possibly `null` (like JMESPath), or even `false`, (2) extend the JSON type system with additional values such as `undefined` (following JavaScript), or `optional`, and have it evaluate to that, or (3) treat it as an error (like Jayway JSONPath).  None of these alternatives makes JSON `null` more valid or less valid.\r\n\r\nFor comparison, in original Goessner JsonPath, it is specified that JSONPath queries return either an `array` or `false`, \"false in case of no match.\"\r\n\r\nWould you write \"Unlike in original Goessner JsonPath, in IETF JsonPath `false` is treated as a valid value rather than undefined or missing\"? I wouldn't think so.\r\n\r\n",
+              "createdAt": "2022-04-22T13:14:12Z",
+              "updatedAt": "2022-04-22T13:15:42Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44oPeI",
+          "commit": {
+            "abbreviatedOid": "43c0f34"
+          },
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T13:18:44Z",
+          "updatedAt": "2022-04-22T13:18:44Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "Yes.  See my comment above.\r\nhttps://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/181#discussion_r856064412",
+              "createdAt": "2022-04-22T13:18:44Z",
+              "updatedAt": "2022-04-22T13:18:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44oQd1",
+          "commit": {
+            "abbreviatedOid": "43c0f34"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T13:22:10Z",
+          "updatedAt": "2022-04-22T13:22:10Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "I'll scrap that example as it doesn't add much value.",
+              "createdAt": "2022-04-22T13:22:10Z",
+              "updatedAt": "2022-04-22T13:22:10Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44oRJu",
+          "commit": {
+            "abbreviatedOid": "54e6204"
+          },
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T13:23:33Z",
+          "updatedAt": "2022-04-22T13:23:33Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "I actually like it (students would certainly appreciate falling into the trap once and being helped out of it right away); it just requires being careful with the text around it.",
+              "createdAt": "2022-04-22T13:23:33Z",
+              "updatedAt": "2022-04-22T13:23:33Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44oSFg",
+          "commit": {
+            "abbreviatedOid": "43c0f34"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T13:26:38Z",
+          "updatedAt": "2022-04-22T13:26:39Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "Thanks @danielaparker and @cabo. This is fixed with an edited form of @cabo's suggestion.",
+              "createdAt": "2022-04-22T13:26:39Z",
+              "updatedAt": "2022-04-22T13:26:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44obD8",
+          "commit": {
+            "abbreviatedOid": "43c0f34"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T13:49:55Z",
+          "updatedAt": "2022-04-22T13:49:55Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "Yes, happy to add it back with a better description.",
+              "createdAt": "2022-04-22T13:49:55Z",
+              "updatedAt": "2022-04-22T13:49:55Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44pM2V",
+          "commit": {
+            "abbreviatedOid": "46beff6"
+          },
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T16:26:00Z",
+          "updatedAt": "2022-04-22T16:26:00Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "```suggestion\r\n{: title=\"Examples involving (or not involving) null\"}\r\n```",
+              "createdAt": "2022-04-22T16:26:00Z",
+              "updatedAt": "2022-04-22T16:26:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44pN18",
+          "commit": {
+            "abbreviatedOid": "43c0f34"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T16:30:02Z",
+          "updatedAt": "2022-04-22T16:30:02Z",
+          "comments": [
+            {
+              "originalPosition": 28,
+              "body": "> \r\n\r\nI think that's a little \"fussy\", but in the interests of getting this PR merged, I'm happy to make the change.",
+              "createdAt": "2022-04-22T16:30:02Z",
+              "updatedAt": "2022-04-22T16:30:02Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44qK0v",
+          "commit": {
+            "abbreviatedOid": "3beb502"
+          },
+          "author": "timbray",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-04-22T21:08:57Z",
+          "updatedAt": "2022-04-22T21:08:57Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44qTrc",
+          "commit": {
+            "abbreviatedOid": "3beb502"
+          },
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2022-04-22T21:54:29Z",
+          "updatedAt": "2022-04-22T21:54:38Z",
+          "comments": [
+            {
+              "originalPosition": 25,
+              "body": "I believe these need parentheses\r\n\r\n```suggestion\r\n| `$.b[?(@)]` | `null` | `$['b'][0]` | Existence |\r\n| `$.b[?(@==null)]` | `null` | `$['b'][0]` | Comparison |\r\n```\r\n\r\nWe had discussed making them optional somewhere, but I don't think a resolution was reached, which would mean they're still mandatory.",
+              "createdAt": "2022-04-22T21:54:29Z",
+              "updatedAt": "2022-04-22T21:57:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44qrf3",
+          "commit": {
+            "abbreviatedOid": "3beb502"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T23:40:38Z",
+          "updatedAt": "2022-04-22T23:40:38Z",
+          "comments": [
+            {
+              "originalPosition": 25,
+              "body": "@gregsdennis These examples merely follow the [current ABNF](https://ietf-wg-jsonpath.github.io/draft-ietf-jsonpath-base/draft-ietf-jsonpath-base.html#name-filter-selector) in which those parentheses are still optional. Happy to add the parentheses if we agree the ABNF should be changed to mandate the parentheses, but I think it would be best to discuss that separately to this PR (which may have a rather small audience).",
+              "createdAt": "2022-04-22T23:40:38Z",
+              "updatedAt": "2022-04-22T23:40:39Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44rlLD",
+          "commit": {
+            "abbreviatedOid": "3beb502"
+          },
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-04-23T09:31:57Z",
+          "updatedAt": "2022-04-23T09:31:57Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44ry8U",
+          "commit": {
+            "abbreviatedOid": "3beb502"
+          },
+          "author": "gregsdennis",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-23T14:27:31Z",
+          "updatedAt": "2022-04-23T14:27:31Z",
+          "comments": [
+            {
+              "originalPosition": 25,
+              "body": "If that's the case, the ABNF needs to be fixed.  We never agreed to allow these parentheses to be omitted.\r\n\r\nThe closest related discussion on this I could find is https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/92#issuecomment-809331011 and https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/92#issuecomment-809601525.  These comments clearly indicate that the parentheses _should_ be present.",
+              "createdAt": "2022-04-23T14:27:31Z",
+              "updatedAt": "2022-04-23T14:27:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44r17V",
+          "commit": {
+            "abbreviatedOid": "3beb502"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-23T16:48:08Z",
+          "updatedAt": "2022-04-23T16:48:09Z",
+          "comments": [
+            {
+              "originalPosition": 25,
+              "body": "@gregsdennis  I think you should take this up on the mailing list or via a new issue.",
+              "createdAt": "2022-04-23T16:48:08Z",
+              "updatedAt": "2022-04-23T16:48:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44r17-",
+          "commit": {
+            "abbreviatedOid": "3beb502"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-23T16:49:01Z",
+          "updatedAt": "2022-04-23T16:49:01Z",
+          "comments": [
+            {
+              "originalPosition": 25,
+              "body": "@gregsdennis If you are comfortable with these examples reflecting the current spec, please approve so I can merge.",
+              "createdAt": "2022-04-23T16:49:01Z",
+              "updatedAt": "2022-04-23T16:49:01Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 182,
+      "id": "PR_kwDOEIqrgc42nbrf",
+      "title": "Improve filter selector section",
+      "url": "https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/pull/182",
+      "state": "OPEN",
+      "author": "glyn",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "glyn"
+      ],
+      "labels": [],
+      "body": "Fixes https://github.com/ietf-wg-jsonpath/draft-ietf-jsonpath-base/issues/167",
+      "createdAt": "2022-04-22T10:49:51Z",
+      "updatedAt": "2022-04-23T00:08:53Z",
+      "baseRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "baseRefName": "main",
+      "baseRefOid": "d3d8455538266f218f3e5c15a5afc975686087a8",
+      "headRepository": "ietf-wg-jsonpath/draft-ietf-jsonpath-base",
+      "headRefName": "filter-selector",
+      "headRefOid": "cf91e95f5c1f0dddbea583e9fd57b3aa32d48469",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOEIqrgc44qLWC",
+          "commit": {
+            "abbreviatedOid": "fb41f8d"
+          },
+          "author": "timbray",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T21:12:15Z",
+          "updatedAt": "2022-04-22T21:12:16Z",
+          "comments": [
+            {
+              "originalPosition": 47,
+              "body": "With RFC 7405 you can say %s and get case-sensitive matching.  But I think this is OK?",
+              "createdAt": "2022-04-22T21:12:15Z",
+              "updatedAt": "2022-04-22T21:12:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44qLca",
+          "commit": {
+            "abbreviatedOid": "fb41f8d"
+          },
+          "author": "timbray",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T21:12:55Z",
+          "updatedAt": "2022-04-22T21:12:56Z",
+          "comments": [
+            {
+              "originalPosition": 118,
+              "body": "\"is\" should be \"are\", semantics is plural",
+              "createdAt": "2022-04-22T21:12:56Z",
+              "updatedAt": "2022-04-22T21:12:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44qQf8",
+          "commit": {
+            "abbreviatedOid": "fb41f8d"
+          },
+          "author": "cabo",
+          "authorAssociation": "MEMBER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T21:36:07Z",
+          "updatedAt": "2022-04-22T21:36:07Z",
+          "comments": [
+            {
+              "originalPosition": 118,
+              "body": "se\u00b7man\u00b7tics | s\u0259\u02c8m\u00e6n(t)\u026aks |\r\nplural noun [usually treated as singular]\r\n\r\n(But I won't contradict native speakers here...)",
+              "createdAt": "2022-04-22T21:36:07Z",
+              "updatedAt": "2022-04-22T21:36:07Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44qsN4",
+          "commit": {
+            "abbreviatedOid": "fb41f8d"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-22T23:54:38Z",
+          "updatedAt": "2022-04-22T23:54:38Z",
+          "comments": [
+            {
+              "originalPosition": 118,
+              "body": "https://www.collinsdictionary.com/dictionary/english/semantics claims that \"semantics\" functions as singular in British English, is unclear about American English, but then goes on to cite the example \"They are also logically meaningful, they have well-defined truth conditions, and their semantics are unambiguous.\" This sounds plain wrong to my British English ear, but the spec should be in American English, so I'll change it.",
+              "createdAt": "2022-04-22T23:54:38Z",
+              "updatedAt": "2022-04-22T23:54:38Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44qss8",
+          "commit": {
+            "abbreviatedOid": "fb41f8d"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-23T00:04:14Z",
+          "updatedAt": "2022-04-23T00:04:14Z",
+          "comments": [
+            {
+              "originalPosition": 47,
+              "body": "I think it's ok. We don't require a normalized form of `number`. For example, I think the following all have the same meaning in this context: `100`, `100.0`, `100.00`, etc., `1e2`, `1.0e2`, `1.00e2`, etc., `1e02`, `1e002`, etc., `1000e-1`, `10000e-2`, etc. (and then the forms using `E` instead of `e`).",
+              "createdAt": "2022-04-23T00:04:14Z",
+              "updatedAt": "2022-04-23T00:04:14Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOEIqrgc44qs8n",
+          "commit": {
+            "abbreviatedOid": "fb41f8d"
+          },
+          "author": "glyn",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-04-23T00:08:52Z",
+          "updatedAt": "2022-04-23T00:08:53Z",
+          "comments": [
+            {
+              "originalPosition": 118,
+              "body": "Fixed (after rebasing) with the observation that \"semantics\" is already plural elsewhere in the spec.",
+              "createdAt": "2022-04-23T00:08:52Z",
+              "updatedAt": "2022-04-23T00:08:53Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
