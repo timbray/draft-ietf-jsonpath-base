@@ -5,10 +5,10 @@
 JSONPath WG                                              S. Gössner, Ed.
 Internet-Draft                                   Fachhochschule Dortmund
 Intended status: Standards Track                      G. Normington, Ed.
-Expires: 24 October 2022                                                
+Expires: 26 October 2022                                                
                                                          C. Bormann, Ed.
                                                   Universität Bremen TZI
-                                                           22 April 2022
+                                                           24 April 2022
 
 
                   JSONPath: Query expressions for JSON
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 October 2022.
+   This Internet-Draft will expire on 26 October 2022.
 
 Copyright Notice
 
@@ -86,7 +86,8 @@ Table of Contents
        3.5.7.  Descendant Selector
        3.5.8.  Filter Selector
        3.5.9.  List Selector
-     3.6.  Normalized Paths
+     3.6.  Semantics of null
+     3.7.  Normalized Paths
    4.  IANA Considerations
      4.1.  Registration of Media Type application/jsonpath
    5.  Security Considerations
@@ -1378,7 +1379,49 @@ Examples
 
                       Table 14: List selector examples
 
-3.6.  Normalized Paths
+3.6.  Semantics of null
+
+   Note that JSON null is treated the same as any other JSON value: it
+   is not taken to mean "undefined" or "missing".
+
+Examples
+
+   JSON document:
+
+   {"a": null, "b": [null], "c": [{}], "null": 1}
+
+   Queries:
+
+      +===================+========+===========+====================+
+      |       Query       | Result |   Result  | Comment            |
+      |                   |        |   Paths   |                    |
+      +===================+========+===========+====================+
+      |        $.a        | null   |   $['a']  | Object value       |
+      +-------------------+--------+-----------+--------------------+
+      |       $.a[0]      |        |           | null used as array |
+      +-------------------+--------+-----------+--------------------+
+      |       $.a.d       |        |           | null used as       |
+      |                   |        |           | object             |
+      +-------------------+--------+-----------+--------------------+
+      |       $.b[0]      | null   | $['b'][0] | Array value        |
+      +-------------------+--------+-----------+--------------------+
+      |       $.b[*]      | null   | $['b'][0] | Array value        |
+      +-------------------+--------+-----------+--------------------+
+      |      $.b[?@]      | null   | $['b'][0] | Existence          |
+      +-------------------+--------+-----------+--------------------+
+      |   $.b[?@==null]   | null   | $['b'][0] | Comparison         |
+      +-------------------+--------+-----------+--------------------+
+      | $.c[?(@.d==null)] |        |           | Comparison with    |
+      |                   |        |           | "missing" value    |
+      +-------------------+--------+-----------+--------------------+
+      |       $.null      | 1      | $['null'] | Not JSON null at   |
+      |                   |        |           | all, just a string |
+      |                   |        |           | as object key      |
+      +-------------------+--------+-----------+--------------------+
+
+            Table 15: Examples involving (or not involving) null
+
+3.7.  Normalized Paths
 
    A Normalized Path is a JSONPath with restricted syntax that
    identifies a node by providing a query that results in exactly that
@@ -1450,7 +1493,7 @@ Examples
             | $.a.b[1:2] |  $['a']['b'][1] | Nested structure |
             +------------+-----------------+------------------+
 
-                     Table 15: Normalized Path examples
+                     Table 16: Normalized Path examples
 
 4.  IANA Considerations
 
@@ -1656,7 +1699,7 @@ A.1.  JSONPath and XPath
 
    $.store.book[?(@.price < 10)].title
 
-   Table 16 extends Table 1 by providing a comparison with similar XPath
+   Table 17 extends Table 1 by providing a comparison with similar XPath
    concepts.
 
     +==========+==================+===================================+
@@ -1700,9 +1743,9 @@ A.1.  JSONPath and XPath
     | ()       | n/a              | grouping                          |
     +----------+------------------+-----------------------------------+
 
-                Table 16: XPath syntax compared to JSONPath
+                Table 17: XPath syntax compared to JSONPath
 
-   For further illustration, Table 17 shows some XPath expressions and
+   For further illustration, Table 18 shows some XPath expressions and
    their JSONPath equivalents.
 
    +======================+========================+===================+
@@ -1749,7 +1792,7 @@ A.1.  JSONPath and XPath
    |                      |                        | input value       |
    +----------------------+------------------------+-------------------+
 
-     Table 17: Example XPath expressions and their JSONPath equivalents
+     Table 18: Example XPath expressions and their JSONPath equivalents
 
    XPath has a lot more functionality (location paths in unabbreviated
    syntax, operators and functions) than listed in this comparison.
