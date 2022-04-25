@@ -5,10 +5,10 @@
 JSONPath WG                                              S. Gössner, Ed.
 Internet-Draft                                   Fachhochschule Dortmund
 Intended status: Standards Track                      G. Normington, Ed.
-Expires: 26 October 2022                                                
+Expires: 27 October 2022                                                
                                                          C. Bormann, Ed.
                                                   Universität Bremen TZI
-                                                           24 April 2022
+                                                           25 April 2022
 
 
                   JSONPath: Query expressions for JSON
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 26 October 2022.
+   This Internet-Draft will expire on 27 October 2022.
 
 Copyright Notice
 
@@ -1177,14 +1177,37 @@ Syntax
                        paren-expr /
                        relation-expr
    exist-expr        = [neg-op S] singular-path          ; path existence or non-existence
+
+   Paths in filter expressions are Singular Paths, each of which selects
+   at most one node.
+
    singular-path     = rel-singular-path / abs-singular-path
    rel-singular-path = "@" *(S (dot-selector / index-selector))
    abs-singular-path = root-selector *(S (dot-selector / index-selector))
+
+   Parentheses can be used with boolean-expr for grouping.  So filter
+   selection syntax in the original proposal [?(<expr>)] is naturally
+   contained in the current lean syntax [?<expr>] as a special case.
+
    paren-expr        = [neg-op S] "(" S boolean-expr S ")" ; parenthesized expression
    neg-op            = "!"                               ; not operator
 
    relation-expr = comp-expr /                           ; comparison test
                    regex-expr                            ; regular expression test
+
+   Comparisons are restricted to Singular Path values and primitive
+   values (such as number, string, true, false, null).
+
+   Comparisons with complex values will fail, i.e. no selection occurs.
+
+   Data types are not implicitly converted in comparisons.  So "13 ==
+   '13'" selects no node.
+
+   A member or element value by itself in a Boolean context is
+   interpreted as false only if it does not exist.  Otherwise it is
+   interpreted as true.  To be more specific about the actual value,
+   explicit comparisons are necessary.  This existence test -- as an
+   exception to the general rule -- also works with structured values.
 
    comp-expr    = comparable S comp-op S comparable
    comparable   = number / string-literal /              ; primitive ...
@@ -1193,6 +1216,12 @@ Syntax
    comp-op      = "==" / "!=" /                          ; comparison ...
                   "<"  / ">"  /                          ; operators
                   "<=" / ">="
+
+   Alphabetic characters in ABNF are case-insensitive, so "e" can be
+   either "e" or "E".
+
+   true, false, and null are lower-case only (case-sensitive).
+
    number       = int [ frac ] [ exp ]                   ; decimal number
    frac         = "." 1*DIGIT                            ; decimal fraction
    exp          = "e" [ "-" / "+" ] 1*DIGIT              ; decimal exponent
@@ -1200,43 +1229,17 @@ Syntax
    false        = %x66.61.6c.73.65                       ; false
    null         = %x6e.75.6c.6c                          ; null
 
+   Regular expression tests can be applied to JSON string values
+   (Section 7 of [RFC8259]) only (on the left-hand side of =~); they
+   yield false otherwise.
+
+   The syntax of regular expressions in the string-literals on the
+   right-hand side of =~ is as defined in
+   [I-D.draft-bormann-jsonpath-iregexp].
+
    regex-expr   = (singular-path / string-literal) S regex-op S regex
    regex-op     = "=~"                                   ; regular expression match
    regex        = string-literal                         ; I-Regexp
-
-   Notes:
-
-   *  Parentheses can be used with boolean-expr for grouping.  So filter
-      selection syntax in the original proposal [?(<expr>)] is naturally
-      contained in the current lean syntax [?<expr>] as a special case.
-
-   *  Comparisons are restricted to primitive values (such as number,
-      string, true, false, null).  Comparisons with complex values will
-      fail, i.e. no selection occurs.
-
-   *  Data types are not implicitly converted in comparisons.  So "13 ==
-      '13'" selects no node.
-
-   *  A member or element value by itself in a Boolean context is
-      interpreted as false only if it does not exist.  Otherwise it is
-      interpreted as true.  To be more specific about the actual value,
-      explicit comparisons are necessary.  This existence test -- as an
-      exception to the general rule -- also works with structured
-      values.
-
-   *  Paths in filter expressions are Singular Paths, each of which
-      selects at most one node.
-
-   *  The regular expressions in the string-literals on the right-hand
-      side of =~ are as defined in [I-D.draft-bormann-jsonpath-iregexp].
-      Regular expression tests can be applied to JSON string values
-      (Section 7 of [RFC8259]) only (on the left-hand side of =~); they
-      yield false otherwise.
-
-   *  Alphabetic characters in ABNF are case-insensitive, so "e" can be
-      either "e" or "E".
-
-   *  false, null, true are lower-case only (case-sensitive).
 
    The following table lists filter expression operators in order of
    precedence from highest (binds most tightly) to lowest (binds least
@@ -1254,7 +1257,6 @@ Syntax
                   |     3      | Relations |   == !=   |
                   |            |           | < <= > >= |
                   |            |           |     =~    |
-                  |            |           |     in    |
                   +------------+-----------+-----------+
                   |     2      |  Logical  |     &&    |
                   |            |    AND    |           |
@@ -1269,9 +1271,20 @@ Syntax
 Semantics
 
    The filter-selector works with arrays and objects exclusively.  Its
-   result might be a list of _zero_, _one_, _multiple_ or _all_ of their
-   element or member values then.  Applied to other value types, it will
-   select nothing.
+   result is a list of _zero_, _one_, _multiple_ or _all_ of their array
+   elements or member values, respectively.  Applied to other value
+   types, it will select nothing.
+
+   A relative path, beginning with @, refers to the current array
+   element or member value as the filter selector iterates over the
+   array or object.
+
+   Comparisons using one of the operators <, <=, >, and >= are between
+   numeric values only.  Using these operators to compare other types of
+   values produces a "false" comparison result.
+
+   The semantics of regular expressions are as defined in
+   [I-D.draft-bormann-jsonpath-iregexp].
 
 Examples
 
