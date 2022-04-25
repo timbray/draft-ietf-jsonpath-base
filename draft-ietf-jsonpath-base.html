@@ -1236,6 +1236,14 @@ within a JavaScript Object Notation (JSON, RFC 8259) value.<a href="#section-abs
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
             <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-security-considerations" class="xref">Security Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="xref">5.1</a>.  <a href="#name-attack-vectors-on-jsonpath-" class="xref">Attack vectors on JSONPath Implementations</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="xref">5.2</a>.  <a href="#name-attacks-on-security-mechani" class="xref">Attacks on Security Mechanisms that Employ JSONPath</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
             <p id="section-toc.1-1.6.1"><a href="#section-6" class="xref">6</a>.  <a href="#name-references" class="xref">References</a></p>
@@ -3709,7 +3717,55 @@ normal-element-index      = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
       <h2 id="name-security-considerations">
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-5-1">This section gives security considerations, as required by <span>[<a href="#RFC3552" class="xref">RFC3552</a>]</span>.<a href="#section-5-1" class="pilcrow">¶</a></p>
+<p id="section-5-1">Security considerations for JSONPath can stem from<a href="#section-5-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5-2.1">attack vectors on JSONPath implementations, and<a href="#section-5-2.1" class="pilcrow">¶</a>
+</li>
+        <li class="normal" id="section-5-2.2">the way JSONPath is used in security-relevant mechanisms.<a href="#section-5-2.2" class="pilcrow">¶</a>
+</li>
+      </ul>
+<div id="attack-vectors-on-jsonpath-implementations">
+<section id="section-5.1">
+        <h3 id="name-attack-vectors-on-jsonpath-">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-attack-vectors-on-jsonpath-" class="section-name selfRef">Attack vectors on JSONPath Implementations</a>
+        </h3>
+<p id="section-5.1-1">Historically, JSONPath has often been implemented by feeding parts of
+the query to an underlying programming language engine, e.g.,
+JavaScript.
+This approach is well known to lead to injection attacks and would
+require perfect input validation to prevent these attacks (see
+<span><a href="https://rfc-editor.org/rfc/rfc8259#section-12" class="relref">Section 12</a> of [<a href="#RFC8259" class="xref">RFC8259</a>]</span> for similar considerations for JSON itself).
+Instead, JSONPath implementations need to implement the entire syntax
+of the query without relying on the parsers of programming language
+engines.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<p id="section-5.1-2">Attacks on availability may attempt to trigger unusually expensive
+runtime performance exhibited by certain implementations in certain
+cases.
+(See <span><a href="https://rfc-editor.org/rfc/rfc8949#section-10" class="relref">Section 10</a> of [<a href="#RFC8949" class="xref">RFC8949</a>]</span> for issues in hash-table implementations,
+and <span><a href="https://datatracker.ietf.org/doc/html/draft-bormann-jsonpath-iregexp-03#section-8" class="relref">Section 8</a> of [<a href="#I-D.draft-bormann-jsonpath-iregexp" class="xref">I-D.draft-bormann-jsonpath-iregexp</a>]</span> for performance issues in regular
+expression implementations.)
+Implementers need to be aware that good average performance is not
+sufficient as long as an attacker can choose to submit specially
+crafted JSONPath queries that trigger surprisingly high, possibly
+exponential, CPU usage.<a href="#section-5.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="attacks-on-security-mechanisms-that-employ-jsonpath">
+<section id="section-5.2">
+        <h3 id="name-attacks-on-security-mechani">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-attacks-on-security-mechani" class="section-name selfRef">Attacks on Security Mechanisms that Employ JSONPath</a>
+        </h3>
+<p id="section-5.2-1">Where JSONPath is used as a part of a security mechanism, attackers
+can attempt to evoke unexpected behavior, or take advantage of
+differences in behavior between JSONPath implementations.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.2-2">This also applies to underlying technologies such as UTF-8 (see
+<span><a href="https://rfc-editor.org/rfc/rfc3629#section-10" class="relref">Section 10</a> of [<a href="#RFC3629" class="xref">RFC3629</a>]</span>), the Unicode character set, and JSON.
+A characteristic of JSON that can lead to varying results is the
+fact that JSON objects are unordered; therefore, the order in which
+results of a JSONPath query reflect the presence of JSON object
+members can vary with implementations.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <section id="section-6">
@@ -3772,13 +3828,13 @@ normal-element-index      = "0" / (DIGIT1 *DIGIT) ; non-negative decimal integer
         <dd>
 <span class="refAuthor">Gössner, S.</span>, <span class="refTitle">"JSONPath — XPath for JSON"</span>, <time datetime="2007-02-21" class="refDate">21 February 2007</time>, <span>&lt;<a href="https://goessner.net/articles/JsonPath/">https://goessner.net/articles/JsonPath/</a>&gt;</span>. </dd>
 <dd class="break"></dd>
-<dt id="RFC3552">[RFC3552]</dt>
-        <dd>
-<span class="refAuthor">Rescorla, E.</span> and <span class="refAuthor">B. Korver</span>, <span class="refTitle">"Guidelines for Writing RFC Text on Security Considerations"</span>, <span class="seriesInfo">BCP 72</span>, <span class="seriesInfo">RFC 3552</span>, <span class="seriesInfo">DOI 10.17487/RFC3552</span>, <time datetime="2003-07" class="refDate">July 2003</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/rfc3552">https://datatracker.ietf.org/doc/html/rfc3552</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="RFC6901">[RFC6901]</dt>
         <dd>
 <span class="refAuthor">Bryan, P., Ed.</span>, <span class="refAuthor">Zyp, K.</span>, and <span class="refAuthor">M. Nottingham, Ed.</span>, <span class="refTitle">"JavaScript Object Notation (JSON) Pointer"</span>, <span class="seriesInfo">RFC 6901</span>, <span class="seriesInfo">DOI 10.17487/RFC6901</span>, <time datetime="2013-04" class="refDate">April 2013</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/rfc6901">https://datatracker.ietf.org/doc/html/rfc6901</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8949">[RFC8949]</dt>
+        <dd>
+<span class="refAuthor">Bormann, C.</span> and <span class="refAuthor">P. Hoffman</span>, <span class="refTitle">"Concise Binary Object Representation (CBOR)"</span>, <span class="seriesInfo">STD 94</span>, <span class="seriesInfo">RFC 8949</span>, <span class="seriesInfo">DOI 10.17487/RFC8949</span>, <time datetime="2020-12" class="refDate">December 2020</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/rfc8949">https://datatracker.ietf.org/doc/html/rfc8949</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="SLICE">[SLICE]</dt>
         <dd>
